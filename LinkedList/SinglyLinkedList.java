@@ -11,7 +11,32 @@ public class SinglyLinkedList {
     private class ListNode {
         int val;
         ListNode next;
-        ListNode(int x) { val = x;}
+        ListNode(int x) {
+            val = x;
+        }
+    }
+    
+    // 203. Remove Linked List Elements
+    public ListNode removeElements(ListNode head, int val) {
+        if (head == null) {
+            return head;
+        }
+        
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        
+        ListNode prev = dummy;
+        ListNode curr = head;
+        while (curr != null) {
+            if (curr.val == val) {
+                prev.next = curr.next;
+            }
+            else {
+                prev = prev.next;
+            }
+            curr = curr.next;
+        }
+        return dummy.next;
     }
     
     /*
@@ -217,5 +242,62 @@ public class SinglyLinkedList {
     5
     */
     
+    // 143. Reorder List
+    public void reorderList(ListNode head) {
+        if (head == null || head.next == null || head.next.next == null) {
+            return;
+        }
+        
+        // Step 1. Find the node in the middle.
+        // using a fast pointer that moves 2 steps every time 
+        // and a slow pointer that moves 1 step every time.
+        ListNode fast = head;
+        ListNode slow = head;
+        while (fast != null && fast.next != null) {
+            fast = fast.next.next;
+            slow = slow.next;
+        }
+        
+        ListNode right = slow.next;
+        slow.next = null;
+        
+        // Step 2. Reverse the right half of the list.
+        ListNode prev = right;
+        ListNode cur = prev.next;
+        prev.next = null;
+        ListNode next = null;
+        while (cur != null) {
+            next = cur.next;
+            cur.next = prev;
+            prev = cur;
+            cur = next;
+        }
+        
+        // Step 3. Merge the left half of the list with the reversed right half of the list.
+        right = prev;
+        ListNode left = head;
+        ListNode leftNext = left;
+        ListNode rightNext = right;
+        while (right != null) {
+            leftNext = left.next;
+            rightNext = right.next;
+            left.next = right;
+            right.next = leftNext;
+            left = leftNext;
+            right = rightNext;
+        }
+    }
+    
+    /*
+    []
+    [1,2]
+    [1,2,3]
+    [1,2,3,4]
+    [1,2,3,4,5]
+    [1,2,3,4,5,6]
+    [1,2,3,4,5,6,7]
+    [1,2,3,4,5,6,7,8]
+    [1,2,3,4,5,6,7,8,9]
+    */
 }
 
