@@ -299,5 +299,167 @@ public class SinglyLinkedList {
     [1,2,3,4,5,6,7,8]
     [1,2,3,4,5,6,7,8,9]
     */
+    /**
+     * Definition for singly-linked list.
+     * public class ListNode {
+     *     int val;
+     *     ListNode next;
+     *     ListNode(int x) {
+     *         val = x;
+     *         next = null;
+     *     }
+     * }
+     */
+    
+    // 160. Intersection of Two Linked Lists
+    public class Solution {
+        public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+            if (headA == null || headB == null) {
+                return null;
+            }
+            
+            ListNode a = headA;
+            int lenA = 0;
+            while (a != null) {
+                a = a.next;
+                lenA++;
+            }
+            
+            ListNode b = headB;
+            int lenB = 0;
+            while (b != null) {
+                b = b.next;
+                lenB++;
+            }
+            
+            ListNode fast = lenB > lenA ? headB : headA;  
+            for (int i = 0; i < Math.abs(lenB - lenA); i++) {
+                fast = fast.next;
+            }
+            ListNode slow = lenB > lenA ? headA : headB;
+            while (fast != null && slow != null) {
+                if (slow == fast) {
+                    return slow;
+                }
+                fast = fast.next;
+                slow = slow.next;
+            }
+            return null;
+        }
+    }
+    
+    // 160. Intersection of Two Linked Lists
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        if (headA == null || headB == null) {
+            return null;
+        }
+        
+        ListNode a = headA;
+        ListNode b = headB;
+        while (a != b) {
+            a = (a != null ? a.next : headB);
+            b = (b != null ? b.next : headA);
+        }
+        return a;
+    }
+    
+    // 328. Odd Even Linked List
+    public ListNode oddEvenList(ListNode head) {
+        if (head == null || head.next == null || head.next.next == null) {
+            return head;
+        }
+
+        ListNode odd = head;
+        ListNode even = head.next;
+        ListNode headEven = head.next;
+        while (even != null && even.next != null) {
+            odd.next = even.next;
+            even.next = odd.next.next;
+            odd.next.next = headEven;
+            odd = odd.next;
+            even = even.next;
+        }
+        
+        return head;
+    }
+    
+    // 19. Remove Nth Node From End of List
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        if (head == null) {
+            return null;
+        }
+        
+        ListNode p1 = head;
+        ListNode p2 = head;
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode pre = dummy;
+        
+        int count = 1;
+        while (count <= n && p2 != null)
+        {
+            p2 = p2.next;
+            count++;
+        }
+        
+        while (p2 != null)
+        {
+            pre = pre.next;
+            p1 = p1.next;
+            p2 = p2.next;
+        }
+        pre.next = p1.next;
+        
+        return dummy.next;
+    }
+    
+    // 21. Merge Two Sorted Lists
+    /**
+     * Definition for singly-linked list.
+     * public class ListNode {
+     *     int val;
+     *     ListNode next;
+     *     ListNode(int x) { val = x; }
+     * }
+     */
+    public class Solution {
+        public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+            if (l1 == null || l2 == null) {
+                return l1 == null ? l2 : l1;
+            }
+            
+            ListNode p1 = l1;
+            ListNode p2 = l2;
+            ListNode dummy = new ListNode(0);
+            ListNode m = dummy;
+            while (p1 != null && p2 != null) {
+                if (p1.val <= p2.val) {
+                    m.next = p1;
+                    p1 = p1.next;
+                }
+                else {
+                    m.next = p2;
+                    p2 = p2.next;
+                }
+                m = m.next;
+            }
+            
+            while (p1 != null) {
+                m.next = p1;
+                p1 = p1.next;
+                m = m.next;
+            }
+            
+            while (p2 != null) {
+                m.next = p2;
+                p2 = p2.next;
+                m = m.next;
+            }
+            
+            return dummy.next;
+        }
+    }
+    
+    
 }
 
