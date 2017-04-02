@@ -130,6 +130,7 @@ public class SnakeGame {
         System.out.println(obj.move("U"));
         System.out.println(obj.move("R"));
         System.out.println(obj.move("D"));
+       
     }
 }
 

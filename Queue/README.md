@@ -1,4 +1,4 @@
-The codes here briefly summarizes my work on queue.
+The java codes here basically summarize my work on Queue. The codes are driven by CMU course 08-722 Data Structures for Application Programmers and some leetcode problems related about Queue.
 
 # MovingAverage.java
 ## 346. Moving Average from Data Stream
