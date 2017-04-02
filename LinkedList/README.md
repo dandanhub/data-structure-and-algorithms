@@ -61,12 +61,15 @@ We can resolve the problem in 3 steps:
 ### 160. Intersection of Two Linked Lists
 Write a program to find the node at which the intersection of two singly linked lists begins.
 For example, the following two linked lists:
+~~~~
 A:          a1 → a2
                    ↘
                      c1 → c2 → c3
                    ↗            
 B:     b1 → b2 → b3
+~~~~
 begin to intersect at node c1.
+
 Notes:
 If the two linked lists have no intersection at all, return null.
 The linked lists must retain their original structure after the function returns.
@@ -77,8 +80,7 @@ Your code should preferably run in O(n) time and use only O(1) memory.
 1.1) get the length of list A and list B in O(n) time.
 1.2) first move the pointer of longer list lenA - lenB steps,
 and then move two list pointers at the same time.
-2) Java solution without knowing the difference in len, from:
-https://discuss.leetcode.com/topic/28067/java-solution-without-knowing-the-difference-in-len/16
+2) Java solution without knowing the difference in len, from [this leetcode discussion](https://discuss.leetcode.com/topic/28067/java-solution-without-knowing-the-difference-in-len/16)
 Do this in two iteration. For the end of first iteration, we just set the pointer to the head
 of another list. The iteration in first iteration will help us get the difference of length between
 two lists.
@@ -95,6 +97,48 @@ The first node is considered odd, the second node even and so on ...
 ##### Solution
 Use two pointers to odd and even position, and a third pointer to mark the head of even position.
 
+### 19. Remove Nth Node From End of List
+Given a linked list, remove the nth node from the end of list and return its head.
+
+For example,
+~~~~
+   Given linked list: 1->2->3->4->5, and n = 2.
+
+   After removing the second node from the end, the linked list becomes 1->2->3->5.
+~~~~
+Note:
+Given n will always be valid.
+Try to do this in one pass.
+
+##### Solution
+1. Use first pointer to move N steps at first.
+2. Move first and second pointers at the same time. When the first pointer reaches the end of the list, the second pointer in to the Nth node from the end of the list.
+3. Remove the Nth node from the list.
+
+### 21. Merge Two Sorted Lists
+Merge two sorted linked lists and return it as a new list. The new list should be made by splicing together the nodes of the first two lists.
+
+#### Solution
+Simply use two pointers to iterate through two lists.
+Compare the node value of two pointers and insert the smaller one.
+
+### 23. Merge k Sorted Lists (Hard)
+Merge k sorted linked lists and return it as one sorted list. Analyze and describe its complexity.
+
+#### Solution
+Use PriorityQueue to select the current smallest node value and insert the node into next position. The time complexity is O(nlogn).
+
+### 24. Swap Nodes in Pairs (Medium)
+Given a linked list, swap every two adjacent nodes and return its head.
+
+For example,
+Given 1->2->3->4, you should return the list as 2->1->4->3.
+
+Your algorithm should use only constant space. You may not modify the values in the list, only nodes itself can be changed.
+
+### Solution
+Simply use two pointers to iterate the list.
+
 # RandomLinkedList.java
 The code is for leetcode 138. Copy List with Random Pointer.
 
@@ -107,7 +151,7 @@ The naiive solution is to use a hash map which stores the mapping from random po
 in original list to its corresponding node in copy list.
 In such way, we can copy the random pointer in 2nd scan.
 2. O(n) time and O(1) space.
-A better solution from [this LeetCode discussion](https://discuss.leetcode.com/topic/7594/a-solution-with-constant-space-complexity-o-1-and-linear-time-complexity-o-n). 
+A better solution from [this LeetCode discussion](https://discuss.leetcode.com/topic/7594/a-solution-with-constant-space-complexity-o-1-and-linear-time-complexity-o-n).
 "The idea is to associate the original node with its copy node in a single linked list.
 In this way, we don't need extra space to keep track of the new nodes."
 a) 1st iteration: duplicate each node and insert duplicated note right behind the original node

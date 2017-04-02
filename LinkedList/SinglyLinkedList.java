@@ -1,3 +1,7 @@
+import java.util.Comparator;
+import java.util.PriorityQueue;
+import java.util.Queue;
+
 /**
  * Basic operations on singly-linked list.
  * @author dandanshi
@@ -299,54 +303,44 @@ public class SinglyLinkedList {
     [1,2,3,4,5,6,7,8]
     [1,2,3,4,5,6,7,8,9]
     */
-    /**
-     * Definition for singly-linked list.
-     * public class ListNode {
-     *     int val;
-     *     ListNode next;
-     *     ListNode(int x) {
-     *         val = x;
-     *         next = null;
-     *     }
-     * }
-     */
-    
+     
+    /*
     // 160. Intersection of Two Linked Lists
-    public class Solution {
-        public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
-            if (headA == null || headB == null) {
-                return null;
-            }
-            
-            ListNode a = headA;
-            int lenA = 0;
-            while (a != null) {
-                a = a.next;
-                lenA++;
-            }
-            
-            ListNode b = headB;
-            int lenB = 0;
-            while (b != null) {
-                b = b.next;
-                lenB++;
-            }
-            
-            ListNode fast = lenB > lenA ? headB : headA;  
-            for (int i = 0; i < Math.abs(lenB - lenA); i++) {
-                fast = fast.next;
-            }
-            ListNode slow = lenB > lenA ? headA : headB;
-            while (fast != null && slow != null) {
-                if (slow == fast) {
-                    return slow;
-                }
-                fast = fast.next;
-                slow = slow.next;
-            }
+    // Solution 1)
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        if (headA == null || headB == null) {
             return null;
         }
+        
+        ListNode a = headA;
+        int lenA = 0;
+        while (a != null) {
+            a = a.next;
+            lenA++;
+        }
+        
+        ListNode b = headB;
+        int lenB = 0;
+        while (b != null) {
+            b = b.next;
+            lenB++;
+        }
+        
+        ListNode fast = lenB > lenA ? headB : headA;  
+        for (int i = 0; i < Math.abs(lenB - lenA); i++) {
+            fast = fast.next;
+        }
+        ListNode slow = lenB > lenA ? headA : headB;
+        while (fast != null && slow != null) {
+            if (slow == fast) {
+                return slow;
+            }
+            fast = fast.next;
+            slow = slow.next;
+        }
+        return null;
     }
+    */
     
     // 160. Intersection of Two Linked Lists
     public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
@@ -414,52 +408,100 @@ public class SinglyLinkedList {
     }
     
     // 21. Merge Two Sorted Lists
-    /**
-     * Definition for singly-linked list.
-     * public class ListNode {
-     *     int val;
-     *     ListNode next;
-     *     ListNode(int x) { val = x; }
-     * }
-     */
-    public class Solution {
-        public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
-            if (l1 == null || l2 == null) {
-                return l1 == null ? l2 : l1;
-            }
-            
-            ListNode p1 = l1;
-            ListNode p2 = l2;
-            ListNode dummy = new ListNode(0);
-            ListNode m = dummy;
-            while (p1 != null && p2 != null) {
-                if (p1.val <= p2.val) {
-                    m.next = p1;
-                    p1 = p1.next;
-                }
-                else {
-                    m.next = p2;
-                    p2 = p2.next;
-                }
-                m = m.next;
-            }
-            
-            while (p1 != null) {
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        if (l1 == null || l2 == null) {
+            return l1 == null ? l2 : l1;
+        }
+        
+        ListNode p1 = l1;
+        ListNode p2 = l2;
+        ListNode dummy = new ListNode(0);
+        ListNode m = dummy;
+        while (p1 != null && p2 != null) {
+            if (p1.val <= p2.val) {
                 m.next = p1;
                 p1 = p1.next;
-                m = m.next;
             }
-            
-            while (p2 != null) {
+            else {
                 m.next = p2;
                 p2 = p2.next;
-                m = m.next;
             }
-            
-            return dummy.next;
+            m = m.next;
         }
+        
+        while (p1 != null) {
+            m.next = p1;
+            p1 = p1.next;
+            m = m.next;
+        }
+        
+        while (p2 != null) {
+            m.next = p2;
+            p2 = p2.next;
+            m = m.next;
+        }
+        
+        return dummy.next;
     }
     
+    // 23. Merge k Sorted Lists
+    public ListNode mergeKLists(ListNode[] lists) {
+        if (lists == null || lists.length == 0) {
+            return null;
+        }
+        
+        Queue<ListNode> pq = new PriorityQueue<ListNode>(new Comparator<ListNode>() {
+            public int compare(ListNode node1, ListNode node2) {
+              return node1.val - node2.val; 
+            }
+        });
+        
+        for (int i = 0; i < lists.length; i++) {
+            if (lists[i] != null) {
+                pq.add(lists[i]);
+            }
+        }
+        
+        ListNode newHead = new ListNode(0);
+        ListNode pointer = newHead;
+        while (!pq.isEmpty()) {
+            ListNode cur = pq.poll();
+            pointer.next = cur;
+            if (cur.next != null) {
+                pq.add(cur.next);
+            }
+        }
+        
+        return newHead.next;
+    }
+
+    // 24. Swap Nodes in Pairs
+    public ListNode swapPairs(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        
+        ListNode prev = new ListNode(0);
+        prev.next = head;
+        
+        ListNode p1 = head;
+        ListNode p2 = head;
+        ListNode newHead = head.next;
+       
+        while (p1 != null && p1.next != null)
+        {
+            p2 = p2.next;
+            prev.next = p2;
+            p1.next = p2.next;
+            p2.next = p1;
+            prev = p1;
+    
+            p1 = p1.next;
+            p2 = p1;
+        }
+        return newHead;
+    }
+
     
 }
 
