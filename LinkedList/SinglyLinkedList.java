@@ -1,6 +1,7 @@
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Stack;
 
 /**
  * Basic operations on singly-linked list.
@@ -502,6 +503,99 @@ public class SinglyLinkedList {
         return newHead;
     }
 
+    // 445. Add Two Numbers II
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        if (l1 == null || l2 == null) {
+            return l1 == null ? l2 : l1;
+        }
+        
+        Stack<ListNode> l1stack = new Stack<ListNode>();
+        Stack<ListNode> l2stack = new Stack<ListNode>();
+        ListNode p1 = l1;
+        ListNode p2 = l2;
+        while (p1 != null) {
+            l1stack.push(p1);
+            p1 = p1.next;
+        }
+        while (p2 != null) {
+            l2stack.push(p2);
+            p2 = p2.next;
+        }
+        
+        Stack<ListNode> stack = new Stack<ListNode>();
+        int carry = 0;
+        int sum = 0;
+        int num = 0;
+        while (!l1stack.isEmpty() && !l2stack.isEmpty()) {
+            sum = l1stack.pop().val + l2stack.pop().val + carry;
+            num = sum % 10;
+            carry = sum / 10;
+            ListNode node = new ListNode(num);
+            stack.push(node);
+            System.out.println(node.val);
+        }
+        
+        while (!l1stack.isEmpty()) {
+            sum = l1stack.pop().val + carry;
+            num = sum % 10;
+            carry = sum / 10;
+            ListNode node = new ListNode(num);
+            stack.push(node);
+        }
+        
+        while (!l2stack.isEmpty()) {
+            sum = l2stack.pop().val + carry;
+            num = sum % 10;
+            carry = sum / 10;
+            ListNode node = new ListNode(num);
+            stack.push(node);
+        }
+        
+        if (carry != 0) {
+            ListNode node = new ListNode(carry);
+            stack.push(node);
+        }
+        
+        ListNode head = stack.pop();
+        ListNode cur = head;
+        while (!stack.isEmpty()) {
+            ListNode node = stack.pop();
+            cur.next = node;
+            cur = node;
+        }
+        
+        return head;
+    }
+    
+    
+    // 439. Ternary Expression Parser
+    public String parseTernary(String expression) {
+        if (expression == null || expression.length() == 0) {
+            return "";
+        }
+        Stack<Character> stack = new Stack<Character>();
+        for (int i = expression.length() - 1; i >= 0; i--) {
+            if (!stack.isEmpty() && stack.peek() == '?') {
+                stack.pop(); // pop the '?' out
+                char left = stack.pop();
+                stack.pop(); // pop the ':' out
+                char right = stack.pop();
+                
+                // test case "T?T:F?T?1:2:F?3:4"
+                if (expression.charAt(i) == 'T') {
+                    stack.push(left);
+                }
+                else {
+                    stack.push(right);
+                }
+            }
+            else {
+                stack.push(expression.charAt(i));
+            }
+        }
+        
+        return String.valueOf(stack.pop());
+    }
     
 }
 

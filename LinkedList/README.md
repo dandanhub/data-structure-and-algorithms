@@ -136,8 +136,26 @@ Given 1->2->3->4, you should return the list as 2->1->4->3.
 
 Your algorithm should use only constant space. You may not modify the values in the list, only nodes itself can be changed.
 
-### Solution
+#### Solution
 Simply use two pointers to iterate the list.
+
+### 445. Add Two Numbers II
+You are given two non-empty linked lists representing two non-negative integers. The most significant digit comes first and each of their nodes contain a single digit. Add the two numbers and return it as a linked list.
+
+You may assume the two numbers do not contain any leading zero, except the number 0 itself.
+
+Follow up:
+What if you cannot modify the input lists? In other words, reversing the lists is not allowed.
+
+Example:
+~~~~
+Input: (7 -> 2 -> 4 -> 3) + (5 -> 6 -> 4)
+Output: 7 -> 8 -> 0 -> 7
+~~~~
+
+#### Solution
+1. An intuitive solution is to reverse the two lists and then add from the lest significant digit.
+2. If we cannot modify the input, instead we can use a stack to achieve the same result as reversing lists.
 
 # RandomLinkedList.java
 The code is for leetcode 138. Copy List with Random Pointer.
