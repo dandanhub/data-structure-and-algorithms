@@ -200,3 +200,48 @@ To generate all distinct permutations of a (half of) string, use a similar appro
 We can solve the problem in two steps:
 1. Find all characters occur along with its occurring time using HashMap. While doing this, we can examine whether a string can form a valid permutation or not, if invalid, simply return empty list.
 2. Construct string (characters) permutation for the first half of the palindrome using backtracking. Construct an answer and add it to result list.
+
+## 51. N-Queens
+The n-queens puzzle is the problem of placing n queens on an n×n chessboard such that no two queens attack each other.
+
+Given an integer n, return all distinct solutions to the n-queens puzzle.
+
+Each solution contains a distinct board configuration of the n-queens' placement, where 'Q' and '.' both indicate a queen and an empty space respectively.
+
+For example,
+There exist two distinct solutions to the 4-queens puzzle:
+~~~~
+[
+ [".Q..",  // Solution 1
+  "...Q",
+  "Q...",
+  "..Q."],
+
+ ["..Q.",  // Solution 2
+  "Q...",
+  "...Q",
+  ".Q.."]
+]
+~~~~
+
+#### Solution
+Classic backtracking problem.
+Scan all possibilities and when a possibility is valid, add it to the final result.
+
+## 52. N-Queens II
+Follow up for N-Queens problem.
+Now, instead outputting board configurations, return the total number of distinct solutions.
+
+#### Solution
+Instead of adding a valid N-Queens layout to result, we add the count by 1.
+
+## 37. Sudoku Solver
+Write a program to solve a Sudoku puzzle by filling the empty cells.
+
+Empty cells are indicated by the character '.'.
+
+You may assume that there will be only one unique solution.
+
+#### Solution
+Classic backtracking problem.
+Iterate all row and column to validate all possibilities.

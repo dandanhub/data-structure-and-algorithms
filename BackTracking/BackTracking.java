@@ -137,5 +137,154 @@ public class BackTracking {
     "20EE:Fb8:85a3:0:0:8A2E:0370:7334"
     */
 
+    // 51. N-Queens
+    public List<List<String>> solveNQueens(int n) {
+        List<List<String>> ans = new ArrayList<List<String>>();
+        if (n < 0) {
+            return ans;
+        }
+        int[][] table = new int[n][n];
+        backtrackingNQueens(ans, new ArrayList<String>(), n, 0, table);
+        return ans;
+    }
 
+    private void backtrackingNQueens(List<List<String>> ans, List<String> list, int n, int row, int[][] table) {
+        if (row == n) {
+            ans.add(new ArrayList<String>(list));
+            return;
+        }
+
+        for (int column = 0; column < n; column++) {
+            if (isAttack(table, row, column)) {
+                table[row][column] = 1;
+                StringBuilder newRow = new StringBuilder();
+                for (int i = 0; i < n; i++) {
+                    if (i != column) {
+                        newRow.append(".");
+                    }
+                    else {
+                        newRow.append("Q");
+                    }
+                }
+                list.add(newRow.toString());
+                backtrackingNQueens(ans, list, n, row + 1, table);
+                list.remove(list.size() - 1);
+                table[row][column] = 0;
+            }
+        }
+    }
+
+    private boolean isAttack(int[][] table, int row, int column) {
+        // conflict in the same column
+        for (int i = 0; i < row; i++) {
+            if (table[i][column] == 1) {
+                return false;
+            }
+        }
+
+        // conflict in diagonal, left
+        for (int i = row - 1; i >= 0; i--) {
+            int col = column - (row - i);
+            if (col >= 0 && table[i][col] == 1) {
+                return false;
+            }
+        }
+
+        // conflict in diagonal, right
+        for (int i = row - 1; i >= 0; i--) {
+            int col = column + (row - i);
+            if (col < table[row].length && table[i][col] == 1) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    // 52. N-Queens II
+    public int totalNQueens(int n) {
+        if (n < 0) {
+            return 0;
+        }
+        int[][] table = new int[n][n];
+        return backtrackingTotalNQueens(n, 0, table);
+    }
+
+    private int backtrackingTotalNQueens(int n, int row, int[][] table) {
+        if (row == n) {
+            return 1;
+        }
+
+        int ans = 0;
+        for (int column = 0; column < n; column++) {
+            if (isAttack(table, row, column)) {
+                table[row][column] = 1;
+                ans += backtrackingNQueens(n, row + 1, table);
+                table[row][column] = 0;
+            }
+        }
+        return ans;
+    }
+
+    // 37. Sudoku Solver
+    public void solveSudoku(char[][] board) {
+        backtackingSolveSudoku(board, 0, 0);
+    }
+
+    private boolean backtackingSolveSudoku(char[][] board, int row, int column) {
+        if (row == board.length) {
+            return true;
+        }
+        if (column == board[0].length) {
+            return backtackingSolveSudoku(board, row + 1, 0);
+        }
+
+        if (board[row][column] == '.') {
+            for (int num = 1; num < 10; num++) {
+                char ch = Character.forDigit(num, 10);
+                if (isValidSoduku(board, row, column, ch)) {
+                    board[row][column] = ch;
+                    if (backtackingSolveSudoku(board, row, column + 1)) {
+                        return true;
+                    }
+                    board[row][column] = '.';
+                }
+            }
+        }
+        else {
+            return backtackingSolveSudoku(board, row, column + 1);
+        }
+
+        return false;
+    }
+
+    private boolean isValidSoduku(char[][] board, int row, int col, char ch) {
+
+        // check column
+        for (int i = 0; i < board.length; i++) {
+            if (board[i][col] == ch) {
+                return false;
+            }
+        }
+
+        // check row
+        for (int i = 0; i < board[row].length; i++) {
+            if (board[row][i] == ch) {
+                return false;
+            }
+        }
+
+        int r = (row / 3) * 3;
+        int c = (col / 3) * 3;
+        // check 3 * 3
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (board[r + i][c + j] == ch) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }
