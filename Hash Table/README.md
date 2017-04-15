@@ -51,3 +51,27 @@ The problem description is not so clear, refer to [leetcode discussion](https://
   - Then, I iterate through the list to determine whether is any dictionary word other than the query one, that has the same abbreviation.
 
   2. The naiive solution is slow because it iterate the retrieved list. We can improve it much according to the [leetcode discussion](https://discuss.leetcode.com/topic/30533/java-solution-with-one-hashmap-string-string-beats-90-of-submissions)
+
+## 290. Word Pattern (Easy)
+Given a pattern and a string str, find if str follows the same pattern.
+
+Here follow means a full match, such that there is a bijection between a letter in pattern and a non-empty word in str.
+
+Examples:
+pattern = "abba", str = "dog cat cat dog" should return true.
+pattern = "abba", str = "dog cat cat fish" should return false.
+pattern = "aaaa", str = "dog cat cat dog" should return false.
+pattern = "abba", str = "dog dog dog dog" should return false.
+Notes:
+You may assume pattern contains only lowercase letters, and str contains lowercase letters separated by a single space.
+
+#### Solution
+ Use a hash table to store char in pattern with corresponding string in str.
+
+For test case like,
+~~~~
+ "abba"
+ "dog dog dog dog"
+~~~~
+
+We need to check not only whether map.containsKey() but also map.containsValue().

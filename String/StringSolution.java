@@ -59,4 +59,22 @@ public class StringSolution {
       map.put(str, list);
       return list;
   }
+
+  // 293. Flip Game
+  public List<String> generatePossibleNextMoves(String s) {
+        List<String> list = new ArrayList<String>();
+        if (s == null || s.length() < 2) {
+            return list;
+        }
+        for (int i = 0; i < s.length() - 1; i++) {
+            if (s.substring(i, i + 2).equals("++")) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(s.substring(0, i))
+                  .append("--")
+                  .append(s.substring(i + 2));
+                list.add(sb.toString());
+            }
+        }
+        return list;
+    }
 }

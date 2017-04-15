@@ -287,4 +287,69 @@ public class BackTracking {
 
         return true;
     }
+
+    // 291. Word Pattern II
+    public boolean wordPatternMatch(String pattern, String str) {
+        if (pattern == null) {
+            return str == null;
+        }
+        if (pattern.length() == 0) {
+            return str.length() == 0;
+        }
+        Map<Character, String> map = new HashMap<Character, String>();
+        return backtrackingPatternMatch(pattern, 0, str, map);
+    }
+
+    private boolean backtrackingPatternMatch(String pattern, int pos, String str, Map<Character, String> map) {
+        if (pos == pattern.length()) {
+            if (str.length() == 0) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        char ch = pattern.charAt(pos);
+        for (int j = 1; j <= str.length(); j++) {
+            String s = str.substring(0, j);
+            if (!map.containsKey(ch) && !map.containsValue(s)) {
+                map.put(ch, s);
+                if (backtrackingPatternMatch(pattern, pos + 1, str.substring(j), map)) {
+                    return true;
+                }
+                else {
+                    map.remove(ch);
+                }
+            }
+            else if (map.containsKey(ch) && s.equals(map.get(ch))) {
+                if (backtrackingPatternMatch(pattern, pos + 1, str.substring(j), map)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // 294. Flip Game II
+    public boolean canWin(String s) {
+        if (s == null || s.length() < 0) {
+            return false;
+        }
+        return backtrackingWin(s);
+    }
+
+    private boolean backtrackingWin(String s) {
+        for (int i = 0; i < s.length() - 1; i++) {
+            if (s.substring(i, i + 2).equals("++")) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(s.substring(0, i))
+                  .append("--")
+                  .append(s.substring(i + 2));
+                if (!backtrackingWin(sb.toString())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

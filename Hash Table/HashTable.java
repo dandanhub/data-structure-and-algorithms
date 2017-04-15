@@ -80,4 +80,32 @@ public class HashTable {
         }
         return true;
     }
+
+    // 290. Word Pattern
+    public boolean wordPattern(String pattern, String str) {
+        if (pattern == null || pattern.length() == 0) {
+            return str == null || str.length() == 0;
+        }
+
+        String[] tokens = str.split("\\s");
+        if (pattern.length() != tokens.length) {
+            return false;
+        }
+        Map<Character, String> map = new HashMap<Character, String>();
+        for (int i = 0; i < pattern.length(); i++) {
+            char ch = pattern.charAt(i);
+            String s = tokens[i];
+            if (!map.containsKey(ch)) {
+                if (map.containsValue(s)) {
+                    return false;
+                }
+                map.put(ch, s);
+            }
+            else if (!s.equals(map.get(ch))) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

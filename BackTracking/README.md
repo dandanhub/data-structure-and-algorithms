@@ -245,3 +245,61 @@ You may assume that there will be only one unique solution.
 #### Solution
 Classic backtracking problem.
 Iterate all row and column to validate all possibilities.
+
+## 254. Factor Combinations (Medium) *
+Numbers can be regarded as product of its factors. For example,
+
+8 = 2 x 2 x 2;
+  = 2 x 4.
+Write a function that takes an integer n and return all possible combinations of its factors.
+
+Note:
+1. You may assume that n is always positive.
+2. Factors should be greater than 1 and less than n.
+
+#### Solution
+The thing is how to avoid duplications.
+For example, 32, we will consider [2,2,2,4] and [4,2,2,2] as duplicates.
+LeetCode deleted the description:
+"Each combination's factors must be sorted ascending, for example: The factors of 2 and 6 is [2, 6], not [6, 2]."
+
+Set a lower bound in backtacking.
+
+## 291. Word Pattern II
+Given a pattern and a string str, find if str follows the same pattern.
+
+Here follow means a full match, such that there is a bijection between a letter in pattern and a non-empty substring in str.
+
+Examples:
+pattern = "abab", str = "redblueredblue" should return true.
+pattern = "aaaa", str = "asdasdasdasd" should return true.
+pattern = "aabb", str = "xyzabcxzyabc" should return false.
+
+#### Solution
+A naiive backtracking solution. For example,
+pattern "abab"
+str "redblueredblue"
+
+1. put('a',"r") into map, and move forward to match pattern "bab" with "edblueredblue"
+2. put('b',"e") into map, and move forward to match pattern "ab" with "dblueredblue"
+3. when checking pattern 'a' with 'd', it does not match because we have already map pattern 'a' with "r"
+3. try checking pattern 'a' with 'db', it does not match
+4. try checking pattern 'a' with "dbl", it does not match
+5. ...
+6. no match found, back to step 2, we put('b',"ed") into the map
+7. repeat 3 to 5
+8. no match found, back to step 2, until put('b',"edblue") into the map, move forward to match pattern "ab" with "redblue"
+9. bingo
+
+## 294. Flip Game II
+You are playing the following Flip Game with your friend: Given a string that contains only these two characters: + and -, you and your friend take turns to flip two consecutive "++" into "--". The game ends when a person can no longer make a move and therefore the other person will be the winner.
+
+Write a function to determine if the starting player can guarantee a win.
+
+For example, given s = "++++", return true. The starting player can guarantee a win by flipping the middle "++" to become "+--+".
+
+Follow up:
+Derive your algorithm's runtime complexity.
+
+#### Solution
+Iteratively call function by passing new string.
