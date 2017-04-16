@@ -61,3 +61,40 @@ if (str.equals(word1) && str.equals(word2)) {
   }
 }
 ~~~~
+
+## 73. Set Matrix Zeroes
+Given a m x n matrix, if an element is 0, set its entire row and column to 0. Do it in place.
+
+click to show follow up.
+
+Follow up:
+Did you use extra space?
+A straight forward solution using O(mn) space is probably a bad idea.
+A simple improvement uses O(m + n) space, but still not the best solution.
+Could you devise a constant space solution?
+
+#### Solution
+Use two for loop to scan the board.
+When encountering a element with value 0, set the first element of the corresponding column and row as 0.
+**Corner case** like [[1,1,1],[0,1,2]], need special handling of the board[0][0] element.
+
+
+## 41. First Missing Positive
+Given an unsorted integer array, find the first missing positive integer.
+
+For example,
+Given [1,2,0] return 3,
+and [3,4,-1,1] return 2.
+
+Your algorithm should run in O(n) time and uses constant space.
+
+#### Solution
+Since the problem requires to use constant space, so we mark whether an integer appears in the array itself.
+For example, "3 4 1 -1", we scan the array.
+1. current element 3 -> swap(nums, 1, 2) -> "1 4 3 -1"
+2. current element 1 -> 1 is in the right postision, no swap -> move forward
+3. current element 4 -> swap(nums, 1, 3) -> "1 -1 3 4"
+4. current element -1 -> -1 < 0 -> move forward
+5. current element 3 -> 3 is in the right postision, no swap -> move forward
+6. current element 4 -> 4 is in the right postision, no swap -> move forward
+Note corner case when there exist duplicate numbers, like [1,1].
