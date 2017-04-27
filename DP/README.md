@@ -36,3 +36,18 @@ answer: []
 ~~~~
 
 Use a HashMap<String, LinkedList<String>> map to store word breaks of substrings, so as to avoid duplicated search.
+
+## 152. Maximum Product Subarray (Medium*)
+Find the contiguous subarray within an array (containing at least one number) which has the largest product.
+
+For example, given the array [2,3,-2,4],
+the contiguous subarray [2,3] has the largest product = 6.
+
+#### Solution
+The basic idea is to record the maximum and minimum product for array[0:i]. We can use DP to crack the problem. For example,
+    2, 0, 3, -2, -3
+max 2  0  3  0   18
+min 2  0  0  -6  -3
+
+Method 1. We can use a DP[n] array to store the value
+Method 2. No need to use O(n) space because we only need to know the max and min value of the previous one element.

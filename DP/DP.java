@@ -60,4 +60,24 @@ public class DP {
       map.put(str, list);
       return list;
   }
+
+  // 152. Maximum Product Subarray
+  public int maxProduct(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            //TODO
+        }
+        int[][] dp = new int[nums.length][2];
+
+        int max = nums[0];
+        dp[0][0] = nums[0]; // max
+        dp[0][1] = nums[0]; // min
+
+        for (int i = 1; i < nums.length; i++) {
+            dp[i][0] = Math.max(Math.max(dp[i - 1][0] * nums[i], dp[i - 1][1] * nums[i]), nums[i]);
+            dp[i][1] = Math.min(Math.min(dp[i - 1][0] * nums[i], dp[i - 1][1] * nums[i]), nums[i]);
+            max = Math.max(max, dp[i][0]);
+        }
+
+        return max;
+    }
 }
