@@ -175,3 +175,9 @@ In this way, we don't need extra space to keep track of the new nodes."
 a) 1st iteration: duplicate each node and insert duplicated note right behind the original node
 b) 2nd iteration: copy random pointer by using cur.next.random = cur.random.next.
 c) 3rd iteration: separate the list to two list: the old one and the new copy
+
+## 23. Merge k Sorted Lists
+Merge k sorted linked lists and return it as one sorted list. Analyze and describe its complexity.
+
+#### Solution
+Use priority queue to select the next smallest number

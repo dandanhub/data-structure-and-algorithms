@@ -55,3 +55,31 @@ If there is no valid move, return an empty list [].
 
 #### Solution
 Simply iterate the string.
+
+## 165. Compare Version Numbers
+Compare two version numbers version1 and version2.
+If version1 > version2 return 1, if version1 < version2 return -1, otherwise return 0.
+
+You may assume that the version strings are non-empty and contain only digits and the . character.
+The . character does not represent a decimal point and is used to separate number sequences.
+For instance, 2.5 is not "two and a half" or "half way to version three", it is the fifth second-level revision of the second first-level revision.
+
+Here is an example of version numbers ordering:
+~~~~
+0.1 < 1.1 < 1.2 < 13.37
+~~~~
+
+#### Solution
+WRONG: my first idea is to compare v1 and v2 at their min length; and then handle the one that is longer. However, it becomes trivial to handle corner case, like "1.0" v.s. "1", and "01" v.s. "1".
+
+~~~~
+for (int i = 0; i < Math.min(tokens1.length, tokens2.length); i++) {
+  int v1 = Integer.parseInt(tokens1[i]);
+  int v2 = Integer.parseInt(tokens2[i]);
+  if (v1 != v2) {
+    return v1 > v2 ? 1 : -1;
+    }
+}
+~~~~
+
+Think from the other side, compare at their max length, for the one which is shorter, simply set it to 0.
