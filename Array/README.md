@@ -98,3 +98,11 @@ For example, "3 4 1 -1", we scan the array.
 5. current element 3 -> 3 is in the right postision, no swap -> move forward
 6. current element 4 -> 4 is in the right postision, no swap -> move forward
 Note corner case when there exist duplicate numbers, like [1,1].
+
+## 220. Contains Duplicate III
+Given an array of integers, find out whether there are two distinct indices i and j in the array such that the absolute difference between nums[i] and nums[j] is at most t and the absolute difference between i and j is at most k.
+
+#### Solution
+1. Naiive Solution O(nk) will get time out.
+2. Top solution Using bucket from leetcode discussion O(n).
+3. O(nlogk) using TreeSet. 

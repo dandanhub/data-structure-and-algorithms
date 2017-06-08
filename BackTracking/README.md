@@ -1,4 +1,4 @@
-The java codes here basically summarize my work on backtacking algorithm. The codes are driven by CMU course 08-722 Data Structures for Application Programmers and some LeetCode problems about backtacking.
+The java codes here basically summarize my work on BackTracking algorithm. The codes are driven by CMU course 08-722 Data Structures for Application Programmers and some LeetCode problems about BackTracking.
 
 # BackTracking.java
 
@@ -13,7 +13,7 @@ return ["255.255.11.135", "255.255.111.35"]. (Order does not matter)
 #### Solution
 Check four IP parts one by one. Each IP part should at least have 1 digit and at most 3 digits, and it should between 0 - 255.
 
-## 468. Validate IP Address (Medium) * (Not about backtacking, add here as a supplement for problem 93)
+## 468. Validate IP Address (Medium) * (Not about backtracking, add here as a supplement for problem 93)
 Write a function to check whether an input string is a valid IPv4 address or IPv6 address or neither.
 
 IPv4 addresses are canonically represented in dot-decimal notation, which consists of four decimal numbers, each ranging from 0 to 255, separated by dots ("."), e.g.,172.16.254.1;
@@ -144,8 +144,9 @@ Given "aacecaaa", return "aaacecaaa".
 Given "abcd", return "dcbabcd".
 
 #### Solution
-Naiive O(n^2) method will receive Time Limit Exceed error. Use KMP algorithm to expedite the searching process.
+ Naiive O(n^2) method will receive Time Limit Exceed error. Use KMP algorithm to expedite the searching process.
 
+###### Solution 1
 **What is KMP?**
 We can refer to [this Chinese blog](http://www.ruanyifeng.com/blog/2013/05/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm.html).
 1. Calculate a partial match table, e.g. search word "ABCDABD".
@@ -172,6 +173,11 @@ Here we only need to build KMP table to find the longest palindrome starting fro
 3. The longest palindrome staring from 0 is the value of the last character in the table.
 
 It takes O(n) to get the solution. The code to build KMP table is kind of complicated.
+
+###### Solution 2
+Recursively check the longest palindrome substring from 0.
+Starting from the char in mid of the array.
+The time complexity n/2 + (n/2 - 1) + (n/2 - 2) + ... + (n/2 - n/2) = n/2 * n/2 - (n/4 + n^2/8) = O(n^2) 
 
 ## 266. Palindrome Permutation (Easy) *
 Given a string, determine if a permutation of the string could form a palindrome.
