@@ -164,7 +164,7 @@ If you trigger backtrack by checking whether x, y is within board, will you add 
 To speed up, check the [discussion](https://discuss.leetcode.com/topic/33246/java-15ms-easiest-solution-100-00)
 
 ~~~
-public class Solution {
+ppublic class Solution {
     public List<String> findWords(char[][] board, String[] words) {
         List<String>  ans = new ArrayList<String>();
         if (board == null || board.length == 0 || board[0].length == 0 || words == null || words.length == 0) {
@@ -185,9 +185,9 @@ public class Solution {
     }
 
     private void backtrack(List<String> ans, char[][] board, TriesNode root, boolean[][] visited, int i, int j) {
-        if (root.isWord && !root.isVisited) {
+        if (root.val != null) {
             ans.add(root.val); // found a valid word
-            root.isVisited = true;
+            root.val = null;
         }
 
         int h = board.length;
@@ -207,19 +207,14 @@ public class Solution {
     private class TriesNode {
         String val;
         TriesNode[] children;
-        boolean isWord;
-        boolean isVisited;
 
-        TriesNode(String val) {
-            this.val = val;
-            this.isWord = false;
-            this.isVisited = false;
+        TriesNode() {
             children = new TriesNode[26];
         }
     }
 
     private TriesNode buildTriesTree(String[] words) {
-        TriesNode root = new TriesNode("");
+        TriesNode root = new TriesNode();
         for (String str : words) {
             insertString(root, str);    
         }
@@ -233,13 +228,220 @@ public class Solution {
         for (int i = 0; i < str.length(); i++) {
             char ch = str.charAt(i);
             if (curr.children[ch - 'a'] == null) {
-                curr.children[ch - 'a'] = new TriesNode(str.substring(0, i + 1));
+                curr.children[ch - 'a'] = new TriesNode();
             }
             curr = curr.children[ch - 'a'];
         }
-        curr.isWord = true;
+        curr.val = str;
     }
 }
 ~~~
 
 ---
+
+## 127. Word Ladder
+Given two words (beginWord and endWord), and a dictionary's word list, find the length of shortest transformation sequence from beginWord to endWord, such that:
+
+Only one letter can be changed at a time.
+Each transformed word must exist in the word list. Note that beginWord is not a transformed word.
+For example,
+
+Given:
+beginWord = "hit"
+endWord = "cog"
+wordList = ["hot","dot","dog","lot","log","cog"]
+As one shortest transformation is "hit" -> "hot" -> "dot" -> "dog" -> "cog",
+return its length 5.
+
+Note:
+Return 0 if there is no such transformation sequence.
+All words have the same length.
+All words contain only lowercase alphabetic characters.
+You may assume no duplicates in the word list.
+You may assume beginWord and endWord are non-empty and are not the same.
+
+#### Solution
+1. We should use BFS.
+**No need to build graph!**
+2. How to optimize?
+- When searching for next word, rather than iterate the wordDict, change the curr word by 1 edit (replace) distance. (Follow up: what if we change the problem to that each step, you can replace/delete/add character?)
+-  use two-end BFS (how to code two-end BFS )
+
+**Complexity Analysis**
+Time complexity: visit word in dict once O(n), and for each word, we change its possible transformation 26 * len(word). Therefore, in total, the time complexity is O(n * len(word))
+Space complexity: Set to store word set O(n*  len(word))
+
+Version 1: Use Queue
+~~~
+public class Solution {
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        Set<String> wordSet = new HashSet<String>();
+        for (String str : wordList) {
+            wordSet.add(str);
+        }
+
+        Queue<String> queue = new LinkedList<String>();
+        queue.offer(beginWord);
+        int len = beginWord.length();
+        int depth = 1;
+        while (!queue.isEmpty()) {
+            int count = queue.size();
+            while (count > 0) {
+                String node = queue.poll();
+
+                if (node.equals(endWord)) return depth; // found the target, return depth
+
+                // add adjacent word to the queue
+                for (int i = 0; i < len; i++) {
+                    char chi = node.charAt(i);
+                    String prefix = node.substring(0, i);
+                    String suffix = node.substring(i + 1);
+                    for (char chj = 'a'; chj <= 'z'; chj++) {
+                        if (chi == chj) continue;
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(prefix).append(chj).append(suffix);
+                        String next = sb.toString();
+                        if (wordSet.contains(next)) {
+                            queue.offer(next);
+                            wordSet.remove(next);
+                        }
+                    }
+                }
+
+                count--;
+            }
+
+            depth++;
+        }
+
+        return 0;
+    }
+}
+~~~
+
+Version 2: Use Set
+~~~
+public class Solution {
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        Set<String> wordSet = new HashSet<String>();
+        for (String str : wordList) {
+            wordSet.add(str);
+        }
+
+        int len = beginWord.length();
+        Set<String> set = new HashSet<String>();
+        set.add(beginWord);
+        int depth = 1;
+        while (!set.isEmpty()) {
+            Set<String> nextSet = new HashSet<String>();
+            for (String node : set) {
+                if (node.equals(endWord)) return depth; // found the target, return depth
+
+                // add adjacent word to the queue
+                for (int i = 0; i < len; i++) {
+                    char chi = node.charAt(i);
+                    String prefix = node.substring(0, i);
+                    String suffix = node.substring(i + 1);
+                    for (char chj = 'a'; chj <= 'z'; chj++) {
+                        if (chi == chj) continue;
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(prefix).append(chj).append(suffix);
+                        String next = sb.toString();
+                        if (wordSet.contains(next)) {
+                            nextSet.add(next);
+                            wordSet.remove(next);
+                        }
+                    }
+                }
+            }
+            set = nextSet;
+            depth++;
+        }
+
+        return 0;
+    }
+}
+~~~
+
+Version 3: Two-end BFS
+~~~
+public class Solution {
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        Set<String> wordSet = new HashSet<String>();
+        for (String str : wordList) {
+            wordSet.add(str);
+        }
+
+        int len = beginWord.length();
+        Set<String> startSet = new HashSet<String>();
+        startSet.add(beginWord);
+
+        if (!wordSet.contains(endWord)) return 0; // IMPORTANT: consider that endWord does not exit in the wordList, then we cannot continue to add the endWord to endSet, simply return 0
+        Set<String> endSet = new HashSet<String>();
+        endSet.add(endWord);
+
+        int depth = 1;
+        while (!startSet.isEmpty() && !endSet.isEmpty()) {
+            if (startSet.size() > endSet.size()) {
+                Set<String> tmp = startSet;
+                startSet= endSet;
+                endSet = tmp;
+            }
+
+            Set<String> nextSet = new HashSet<String>();
+            for (String node : startSet) {
+                // if (endSet.contains(node)) return depth; // wrong version
+
+                // add adjacent word to the queue
+                for (int i = 0; i < len; i++) {
+                    char chi = node.charAt(i);
+                    String prefix = node.substring(0, i);
+                    String suffix = node.substring(i + 1);
+                    for (char chj = 'a'; chj <= 'z'; chj++) {
+                        if (chi == chj) continue;
+                        StringBuilder sb = new StringBuilder();
+                        sb.append(prefix).append(chj).append(suffix);
+                        String next = sb.toString();
+                        if (endSet.contains(next)) return depth + 1;
+                        if (wordSet.contains(next)) {
+                            nextSet.add(next);
+                            wordSet.remove(next);
+                        }
+                    }
+                }
+            }
+            startSet = nextSet;
+            depth++;
+        }
+
+        return 0;
+    }
+}
+~~~
+
+## 126. Word Ladder II
+Given two words (beginWord and endWord), and a dictionary's word list, find all shortest transformation sequence(s) from beginWord to endWord, such that:
+
+Only one letter can be changed at a time
+Each transformed word must exist in the word list. Note that beginWord is not a transformed word.
+For example,
+
+Given:
+beginWord = "hit"
+endWord = "cog"
+wordList = ["hot","dot","dog","lot","log","cog"]
+Return
+  [
+    ["hit","hot","dot","dog","cog"],
+    ["hit","hot","lot","log","cog"]
+  ]
+Note:
+Return an empty list if there is no such transformation sequence.
+All words have the same length.
+All words contain only lowercase alphabetic characters.
+You may assume no duplicates in the word list.
+You may assume beginWord and endWord are non-empty and are not the same.
+
+#### Solution
+- Tried to modify Word Ladder I (version 1), but got TLE.
+- 
