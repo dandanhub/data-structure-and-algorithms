@@ -148,29 +148,7 @@ public class Tree {
         }
         return Math.max(depth(root.left), depth(root.right)) + 1;
     }
-
-    // 113. Path Sum II
-    public List<List<Integer>> pathSum(TreeNode root, int sum) {
-        List<List<Integer>> ans = new ArrayList<List<Integer>>();
-        if (root == null) return ans;
-        searchPath(ans, root, new ArrayList<Integer>(), sum);
-        return ans;
-    }
-
-    public void searchPath(List<List<Integer>> list, TreeNode node, List<Integer> path, int sum) {
-        if (node.left == null && node.right == null && node.val == sum) {
-            List<Integer> ele = new ArrayList<Integer>(path);
-            ele.add(node.val);
-            list.add(ele);
-        }
-
-        // List<Integer> ele = new ArrayList<Integer>(path);
-        path.add(node.val);
-        if (node.left != null) searchPath(list, node.left, path, sum - node.val);
-        if (node.right != null) searchPath(list, node.right, path, sum - node.val);
-        path.remove(path.size() - 1);
-    }
-
+    
     // 124. Binary Tree Maximum Path Sum
     private int ans = Integer.MIN_VALUE;
 
