@@ -470,3 +470,122 @@ public class Solution {
     }
 }
 ~~~
+
+# Binary Search Tree
+## 255. Verify Preorder Sequence in Binary Search Tree (Medium)*
+Given an array of numbers, verify whether it is the correct preorder traversal sequence of a binary search tree.
+
+You may assume each number in the sequence is unique.
+
+Follow up:
+Could you do it using only constant space complexity?
+
+#### Solution
+1. Use to stack to verify preorder sequence. If next number is smaller than the last stack number, it means the next number is in the left subtree of all number in the stack, so we push the next number into the stack. If the next number is greater than the last stack number, we need to pop the numbers that are greater than the next number, and it means the next number is in the right subtrees of these poped number. In the meanwhile, we record the value of poped number, since we are in the right subtree of the poped number, we cannot meet any number that is smaller than the low bound.
+2. Follow up let us use only constant space. We can use pointer (array index) to emulate stack.
+
+Time: O(n)
+Space: O(n)
+Attempt: 2 <br>
+~~~
+public class Solution {
+    public boolean verifyPreorder(int[] preorder) {
+        if (preorder == null || preorder.length == 0) return true;
+        Stack<Integer> stack = new Stack<Integer>();
+        int low = Integer.MIN_VALUE;
+        for (int i = 0; i < preorder.length; i++) {
+            if (preorder[i] < low) return false;
+
+            while (!stack.isEmpty() && preorder[i] > stack.peek()) {
+                low = stack.pop();
+            }
+            stack.push(preorder[i]);
+        }
+        return true;
+    }
+}
+~~~
+
+Time: O(n)
+Space: O(1)
+Attempt: 1 <br>
+~~~
+public class Solution {
+    public boolean verifyPreorder(int[] preorder) {
+        if (preorder == null || preorder.length == 0) return true;
+        int low = Integer.MIN_VALUE;
+        int i = -1;
+        for (int num : preorder) {
+            if (num < low) return false;
+            while (i != -1 && num > preorder[i]) {
+                low = preorder[i];
+                i--;
+            }
+            i++;
+            preorder[i] = num;
+        }
+        return true;
+    }
+}
+~~~
+
+## 331. Verify Preorder Serialization of a Binary Tree
+One way to serialize a binary tree is to use pre-order traversal. When we encounter a non-null node, we record the node's value. If it is a null node, we record using a sentinel value such as #.
+~~~
+     _9_
+    /   \
+   3     2
+  / \   / \
+ 4   1  #  6
+/ \ / \   / \
+# # # #   # #
+~~~
+For example, the above binary tree can be serialized to the string "9,3,4,#,#,1,#,#,2,#,6,#,#", where # represents a null node.
+
+Given a string of comma separated values, verify whether it is a correct preorder traversal serialization of a binary tree. Find an algorithm without reconstructing the tree.
+
+Each comma separated value in the string must be either an integer or a character '#' representing null pointer.
+
+You may assume that the input format is always valid, for example it could never contain two consecutive commas such as "1,,3".
+
+Example 1:
+"9,3,4,#,#,1,#,#,2,#,6,#,#"
+Return true
+
+Example 2:
+"1,#"
+Return false
+
+Example 3:
+"9,#,#,1"
+Return false
+
+#### Solution
+1. A node may have three cases: 1) left and right children are both "#" 2) left or right child is "#", the other child is not 3) left and right children are neither "#".
+If we see two consecutive "#", it means we are in 1), we pop the previous "#" and the leaf node out. In other case, we push the current node into stack.
+
+Time: O(n)
+Space: O(n)
+Attempts: 4 (bug failed test case "1,#,#,#,#")
+~~~
+public class Solution {
+    public boolean isValidSerialization(String preorder) {
+        if (preorder == null || preorder.length() == 0) return true;
+
+        String[] nodes = preorder.split(",");
+        Stack<String> stack = new Stack<String>();
+        for (String str : nodes) {
+            if (str.equals("#")) {
+                while (!stack.isEmpty() && stack.peek().equals("#")) {
+                    stack.pop();
+                    if (stack.isEmpty()) return false; // whenever pop twice, check stack empty before the 2nd pop
+                    stack.pop();
+                }
+            }
+            stack.push(str);
+        }
+
+        return stack.size() == 1 && stack.peek().equals("#");
+    }
+}
+~~~
