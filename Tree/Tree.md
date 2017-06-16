@@ -563,6 +563,8 @@ Return false
 #### Solution
 1. A node may have three cases: 1) left and right children are both "#" 2) left or right child is "#", the other child is not 3) left and right children are neither "#".
 If we see two consecutive "#", it means we are in 1), we pop the previous "#" and the leaf node out. In other case, we push the current node into stack.
+2. 记录出度和入度，在建树过程中出度>入度，并且树建完后出度等于入度（如果给的是inorder和postorder的array应该如何处理）
+3. 统计#节点和非#节点的个数
 
 Time: O(n)
 Space: O(n)
@@ -588,4 +590,52 @@ public class Solution {
         return stack.size() == 1 && stack.peek().equals("#");
     }
 }
+~~~
+
+Attempts: 2
+~~~
+public class Solution {
+    public boolean isValidSerialization(String preorder) {
+        if (preorder == null || preorder.length() == 0) return true;
+
+        String[] nodes = preorder.split(",");
+        int indegree = -1;
+        int outdegree = 0;
+        for (String str : nodes) {
+            // bug version, failed test case "#,7,6,9,#,#,#"
+            // if (str.equals("#")) {
+            //     indegree += 1;
+            // }
+            // else {
+            //     indegree += 1;
+            //     outdegree += 2;
+            // }
+
+            // if (outdegree - indegree < 0) return false;
+
+            indegree += 1;
+            if (outdegree - indegree < 0) return false;
+            if (!str.equals("#")) outdegree += 2;
+
+        }
+
+        return indegree == outdegree;
+    }
+}
+~~~
+
+~~~
+Facebook面经
+Given two pre-order traversal arrays of two binary search tree respectively, find first pair of non-matching leaves.
+Follow Up: If they are general binary trees instead of BSTs, could you solve it? give out your reason.
+
+From a pre-order traversal array of a BST, we can detect leaves by doing a sequential scan of the array with a helper stack (see code below for finding the next leaf).
+From there, we can just keep on finding the next leaf in each tree and compare until we find leaves that don't match (or we run out of leaves in one tree before the other; or we just find no mismatches).
+
+A binary tree with pre-order traversal array of 1,2,3 can be a root of 1 with left child 2 and right child 3, or it could be a linked list (e.g. 1 with right child 2, and 2 with right child 3)
+
+Runtime: O(n). Space complexity: O(log n)
+
+Binary Tree
+http://www.geeksforgeeks.org/check-if-leaf-traversal-of-two-binary-trees-is-same/
 ~~~
