@@ -134,8 +134,8 @@ Return 3. The paths that sum to 8 are:
 1. DFS solution.
 我们有两个递归函数：
 - func1 一个是计算包含当前根节点并且path sum等于target的路径个数
-- func2 另一个是计算不包含当前根节点的并且path sum等于target的路径个数。
-func1 在递归调用的时候，因为限定了路径必须包含当前（和调用函数的根节点），所以只能考虑左右子树满足func1的个数
+- func2 另一个是计算不包含当前根节点的并且path sum等于target的路径个数。 <br>
+func1 在递归调用的时候，因为限定了路径必须包含当前（和调用函数的根节点），所以只能考虑左右子树满足func1的个数 <br>
 func2 在递归调用的时候，需要同时考虑左右子树满足func1和func2的个数
 2. 如何加快速度，在O(n)时间内解决，看到讨论帖[discussion](https://discuss.leetcode.com/topic/64526/17-ms-o-n-java-prefix-sum-method/13)
 - The idea is that we cal sum of path from root to the current node.
@@ -403,7 +403,7 @@ Can you figure out ways to solve it with O(n) time complexity?
 
 合法的情况必须满足：
 1. 父节点大于左树所有节点
-2. 父节点小于右树所有节点
+2. 父节点小于右树所有节点 <br>
 为了进行比较，在递归调用的时候，返回左右子树的largestBSTSubtree个数外，还要返回左右子树的最大和最小值，以方便和父节点进行比较
 
 ~~~

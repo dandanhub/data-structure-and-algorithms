@@ -60,26 +60,6 @@ I failed the test case: "2001:0db8:85a3:0:0:8A2E:0370:7334:". The issue here is 
 The java file contains solutions to leetcode question about
 palindrome. Some of the problems use backtracking.
 
-## 131. Palindrome Partitioning (Medium) *
-Given a string s, partition s such that every substring of the partition is a palindrome.
-
-Return all possible palindrome partitioning of s.
-
-For example, given s = "aab",
-Return
-~~~~
-[
-  ["aa","b"],
-  ["a","a","b"]
-]
-~~~~
-
-#### Solution
-Use backtracking template.
-1. Given a string s, if s.substring(0, i) is a valid palindrome, then recursively check the palindrome partition of s.substring(i).
-2. The base case of recursion is when a string is empty, we can add the partitions to final result and return.
-3. Handle the base return case carefully.
-
 ## 132. Palindrome Partitioning II (Hard) * (Backtracking exceed time limit)
 Given a string s, partition s such that every substring of the partition is a palindrome.
 
@@ -177,7 +157,7 @@ It takes O(n) to get the solution. The code to build KMP table is kind of compli
 ###### Solution 2
 Recursively check the longest palindrome substring from 0.
 Starting from the char in mid of the array.
-The time complexity n/2 + (n/2 - 1) + (n/2 - 2) + ... + (n/2 - n/2) = n/2 * n/2 - (n/4 + n^2/8) = O(n^2) 
+The time complexity n/2 + (n/2 - 1) + (n/2 - 2) + ... + (n/2 - n/2) = n/2 * n/2 - (n/4 + n^2/8) = O(n^2)
 
 ## 266. Palindrome Permutation (Easy) *
 Given a string, determine if a permutation of the string could form a palindrome.
