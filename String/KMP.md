@@ -17,22 +17,24 @@ We can refer to [this Chinese blog](http://www.ruanyifeng.com/blog/2013/05/Knuth
 - ABCDAB: [A, AB, ABC, ABCD, ABCDB] and [B, AB, DAB, CDAB, BCDAB] -> 2
 - ...
 
-When thinking about how to build KMP table, think it as failure pointer.
+**When thinking about how to build KMP table, think it as failure pointer.** <br>
 Use test case "ababcaabc".
 
-#### 28. Implement strStr()
+## 28. Implement strStr()
 Implement strStr().
 
 Returns the index of the first occurrence of needle in haystack, or -1 if needle is not part of haystack.
 
-###### Solution
+#### Solution
 1. Naiive way
-m - the length of haystack
-n - the length of needle
-time complexity O(mn)
+m - the length of haystack <br>
+n - the length of needle <br>
+time complexity O(mn) <br>
 2. Apply KMP.
-time complexity O(m + n)
-"Since the two portions of the algorithm have, respectively, complexities of O(k) and O(n), the complexity of the overall algorithm is O(n + k). So the total cost of a KMP search is linear in the number of characters of string and pattern."
+time complexity O(m + n) <br>
+"Since the two portions of the algorithm have, respectively, complexities of O(k) and O(n), the complexity of the overall algorithm is O(n + k). So the total cost of a KMP search is linear in the number of characters of string and pattern." <br>
+
+**注意是建立needle的KMP表，然后不匹配位移的时候也是位移needle的指针**
 
 ~~~
 public class Solution {
@@ -92,14 +94,14 @@ public class Solution {
 }
 ~~~
 
-#### 214. Shortest Palindrome
+## 214. Shortest Palindrome
 Given a string S, you are allowed to convert it to a palindrome by adding characters in front of it. Find and return the shortest palindrome you can find by performing this transformation.
 
 For example:
 Given "aacecaaa", return "aaacecaaa".
 Given "abcd", return "dcbabcd".
 
-###### Solution
+#### Solution
 Here we only need to build KMP table to find the longest palindrome starting from 0 position.
 
 1. Build a new string, e.g. for input catacb, build new string catacb#bcatac.
@@ -107,3 +109,38 @@ Here we only need to build KMP table to find the longest palindrome starting fro
 3. The longest palindrome staring from 0 is the value of the last character in the table.
 
 It takes O(n) to get the solution. The code to build KMP table is kind of complicated.
+
+~~~
+public class Solution {
+    public String shortestPalindrome(String s) {
+        if (s == null || s.length() == 0) return s;
+        StringBuilder sb = new StringBuilder(s);
+        String str = s + "#" + sb.reverse().toString();
+        int[] KMP = buildKMP(str);
+        int index = KMP[str.length() - 1];
+
+        StringBuilder sub = new StringBuilder(s.substring(index));
+        String ans = sub.reverse().toString() + s;
+        return ans;
+    }
+
+    private int[] buildKMP(String s) {
+        int[] KMP = new int[s.length()];
+        int index = 0;
+        for (int i = 1; i < s.length(); i++) {
+            index = KMP[i - 1];
+            if (s.charAt(i) == s.charAt(index)) {
+                KMP[i] = index + 1;
+            }
+            else {
+                while (index > 0 && s.charAt(i) != s.charAt(index)) {
+                    index = KMP[index - 1];
+                }
+
+                if (s.charAt(i) == s.charAt(index)) KMP[i] = index + 1;
+            }
+        }
+        return KMP;
+    }
+}
+~~~

@@ -36,6 +36,91 @@ public class Solution {
 }
 ~~~
 
+## 214. Shortest Palindrome
+Given a string S, you are allowed to convert it to a palindrome by adding characters in front of it. Find and return the shortest palindrome you can find by performing this transformation.
+
+For example:
+
+Given "aacecaaa", return "aaacecaaa".
+
+Given "abcd", return "dcbabcd".
+
+#### Solution
+1. Naiive way, we search from mid to check whether it can form a valid palindrome reaching the start of the string. Time O(n^2), but search from start speed up the sol.
+2. KMP, build a KMP table for str#str.reverse(). Linear time complexity.
+
+1
+~~~
+public class Solution {
+    public String shortestPalindrome(String s) {
+        if (s == null || s.length() == 0) return s;
+        StringBuilder sb = new StringBuilder(s);
+        String str = s + "#" + sb.reverse().toString();
+        int[] KMP = buildKMP(str);
+        int index = KMP[str.length() - 1];
+
+        StringBuilder sub = new StringBuilder(s.substring(index));
+        String ans = sub.reverse().toString() + s;
+        return ans;
+    }
+
+    private int[] buildKMP(String s) {
+        int[] KMP = new int[s.length()];
+        int index = 0;
+        for (int i = 1; i < s.length(); i++) {
+            index = KMP[i - 1];
+            if (s.charAt(i) == s.charAt(index)) {
+                KMP[i] = index + 1;
+            }
+            else {
+                while (index > 0 && s.charAt(i) != s.charAt(index)) {
+                    index = KMP[index - 1];
+                }
+
+                if (s.charAt(i) == s.charAt(index)) KMP[i] = index + 1;
+            }
+        }
+        return KMP;
+    }
+}
+~~~
+
+2
+~~~
+public class Solution {
+    public String shortestPalindrome(String s) {
+        if (s == null || s.length() == 0) return s;
+        StringBuilder sb = new StringBuilder(s);
+        String str = s + "#" + sb.reverse().toString();
+        int[] KMP = buildKMP(str);
+        int index = KMP[str.length() - 1];
+
+        StringBuilder sub = new StringBuilder(s.substring(index));
+        String ans = sub.reverse().toString() + s;
+        return ans;
+    }
+
+    private int[] buildKMP(String s) {
+        int[] KMP = new int[s.length()];
+        int index = 0;
+        for (int i = 1; i < s.length(); i++) {
+            index = KMP[i - 1];
+            if (s.charAt(i) == s.charAt(index)) {
+                KMP[i] = index + 1;
+            }
+            else {
+                while (index > 0 && s.charAt(i) != s.charAt(index)) {
+                    index = KMP[index - 1];
+                }
+
+                if (s.charAt(i) == s.charAt(index)) KMP[i] = index + 1;
+            }
+        }
+        return KMP;
+    }
+}
+~~~
+
 ## 5. Longest Palindromic Substring
 Given a string s, find the longest palindromic substring in s. You may assume that the maximum length of s is 1000.
 
