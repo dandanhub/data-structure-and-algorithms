@@ -29,7 +29,7 @@ Note: In the string, each word is separated by single space and there will not b
 
 ---
 
-## 139. Word Break
+## 139. Word Break (Medium)
 Given a non-empty string s and a dictionary wordDict containing a list of non-empty words, determine if s can be segmented into a space-separated sequence of one or more dictionary words. You may assume the dictionary does not contain duplicate words.
 
 For example, given
@@ -38,7 +38,39 @@ dict = ["leet", "code"].
 
 Return true because "leetcode" can be segmented as "leet code".
 
-## 140. Word Break II
+#### Solution
+m - the length of s; <br>
+n - the size of dict; <br>
+k - the avg length of word in dict. <br>
+Word Break, use DP time complexity O(nmk). <br>
+
+~~~
+public class Solution {
+    public boolean wordBreak(String s, List<String> wordDict) {
+        // non-empty string s and non-empty wordDict
+        Set<String> set = new HashSet<String>();
+        for (String str : wordDict) {
+            set.add(str);    
+        }
+
+        int len = s.length();
+        boolean[] dp = new boolean[len + 1];
+        dp[0] = true;
+        for (int i = 1; i < len + 1; i++) {
+            for (String str : set) {
+                int l = str.length(); // the length of the curr word
+                if (i >= l && str.equals(s.substring(i - l, i)) && dp[i - l]) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[len];
+    }
+}
+~~~
+
+## 140. Word Break II (Hard)
 Given a non-empty string s and a dictionary wordDict containing a list of non-empty words, add spaces in s to construct a sentence where each word is a valid dictionary word. You may assume the dictionary does not contain duplicate words.
 
 Return all such possible sentences.
@@ -50,17 +82,52 @@ dict = ["cat", "cats", "and", "sand", "dog"].
 A solution is ["cats and dog", "cat sand dog"].
 
 #### Solution
-m - the length of s;
-n - the size of dict;
-k - the avg length of word in dict.
-For 139. Word Break, use DP time complexity O(nmk).
-
-For 140. Word Break II, typical backtracking + DP (cached intermediate result).
+m - the length of s; <br>
+n - the size of dict; <br>
+k - the avg length of word in dict. <br>
+Word Break, use DP time complexity O(nmk). <br>
+For 140. Word Break II, typical backtracking + DP (cached intermediate result). <br>
 **Complexity Analysis**
 Time: worst case, call backtrack func to check every suffixes of s (fixed end), m times.
 Each time, iterate the whole dict and compare string nk.
 Check discussion [here](https://stackoverflow.com/questions/21273505/memoization-algorithm-time-complexity).
 Space: O(kn) store the word as set.
+
+~~~
+public class Solution {
+    public List<String> wordBreak(String s, List<String> wordDict) {
+        Set<String> set = new HashSet<String>();
+        for (String str : wordDict) {
+            set.add(str);
+        }
+
+        return backtrack(new HashMap<String, List<String>>(), set, s);
+    }
+
+    private List<String> backtrack(Map<String, List<String>> cache, Set<String> wordDict, String s) {
+
+        if (cache.containsKey(s)) return cache.get(s);
+        List<String> ans = new ArrayList<String>();
+        if (s.length() == 0) {
+            ans.add(" ");
+            return ans;
+        }
+
+        for (String str : wordDict) {
+            if (s.startsWith(str)) {
+                List<String> list = backtrack(cache, wordDict, s.substring(str.length())); // the word break result of substring
+                for (String item : list) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(str).append(" ").append(item);
+                    ans.add(sb.toString().trim());
+                }
+            }
+        }
+        cache.put(s, ans);
+        return ans;
+    }
+}
+~~~
 
 ---
 
@@ -444,4 +511,4 @@ You may assume beginWord and endWord are non-empty and are not the same.
 
 #### Solution
 - Tried to modify Word Ladder I (version 1), but got TLE.
-- 
+-

@@ -53,34 +53,31 @@ Given "abcd", return "dcbabcd".
 ~~~
 public class Solution {
     public String shortestPalindrome(String s) {
-        if (s == null || s.length() == 0) return s;
-        StringBuilder sb = new StringBuilder(s);
-        String str = s + "#" + sb.reverse().toString();
-        int[] KMP = buildKMP(str);
-        int index = KMP[str.length() - 1];
+        if (s == null || s.length() <= 1) return s;
+        int mid = (s.length() - 1) / 2;
+        String str = "";
+        for (int i = mid; i >= 0; i--) {
+            if (s.charAt(i) == s.charAt(i + 1)) {
+               str = generatePalindrome(s, i, i + 1);
+               if (str != null) return str;
+            }
 
-        StringBuilder sub = new StringBuilder(s.substring(index));
-        String ans = sub.reverse().toString() + s;
-        return ans;
+            str = generatePalindrome(s, i, i);
+            if (str != null) return str;
+        }
+        return str;
     }
 
-    private int[] buildKMP(String s) {
-        int[] KMP = new int[s.length()];
-        int index = 0;
-        for (int i = 1; i < s.length(); i++) {
-            index = KMP[i - 1];
-            if (s.charAt(i) == s.charAt(index)) {
-                KMP[i] = index + 1;
-            }
-            else {
-                while (index > 0 && s.charAt(i) != s.charAt(index)) {
-                    index = KMP[index - 1];
-                }
-
-                if (s.charAt(i) == s.charAt(index)) KMP[i] = index + 1;
-            }
+    private String generatePalindrome(String s, int l, int r) {
+        while (l >= 0 && r < s.length()) {
+            if (s.charAt(l) != s.charAt(r)) break;
+            l -= 1;
+            r += 1;
         }
-        return KMP;
+
+        if (l >= 0) return null;
+        StringBuilder sb = new StringBuilder(s.substring(r));
+        return sb.reverse() + s;
     }
 }
 ~~~
