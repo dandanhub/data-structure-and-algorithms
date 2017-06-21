@@ -75,7 +75,7 @@ Java ArrayList Source Code
   822   
 ~~~
 
-Attempts: Using Iterator 5 <br>
+Attempt: Using Iterator 5 <br>
 确认是否需要在hasNext()中判断NoSuchElementException()的逻辑 <br>
 如果要求加入remove功能
 ~~~
