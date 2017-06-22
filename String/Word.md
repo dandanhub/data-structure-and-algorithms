@@ -39,10 +39,13 @@ dict = ["leet", "code"].
 Return true because "leetcode" can be segmented as "leet code".
 
 #### Solution
+1. One dimension array dp[], dp[i] means whether a substring from 0 to i (exclusive) has a valid word break or not.
+2. Transition formula: dp[i] = (dp[0] && dict.contains(s.substring(0, i + 1))) || (dp[1] && dict.contains(s.substring(1, i + 1)))) || ... || (dp[i] && dict.contains(s.substring(i, i + 1)))).
+
 m - the length of s; <br>
 n - the size of dict; <br>
 k - the avg length of word in dict. <br>
-Word Break, use DP time complexity O(nmk). <br>
+Time Complexity O(nmk). <br>
 
 ~~~
 public class Solution {
@@ -87,6 +90,17 @@ n - the size of dict; <br>
 k - the avg length of word in dict. <br>
 Word Break, use DP time complexity O(nmk). <br>
 For 140. Word Break II, typical backtracking + DP (cached intermediate result). <br>
+
+Niiave backtacking got TLE with the test case:
+~~~~
+"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+["a","aa","aaa","aaaa","aaaaa","aaaaaa","aaaaaaa","aaaaaaaa","aaaaaaaaa","aaaaaaaaaa"]
+
+answer: []
+~~~~
+
+Use a HashMap<String, LinkedList<String>> map to store word breaks of substrings, so as to avoid duplicated search.
+
 **Complexity Analysis**
 Time: worst case, call backtrack func to check every suffixes of s (fixed end), m times.
 Each time, iterate the whole dict and compare string nk.
