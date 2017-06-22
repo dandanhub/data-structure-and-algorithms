@@ -1,34 +1,3 @@
-## 151. Reverse Words in a String
-Given an input string, reverse the string word by word.
-
-For example,
-Given s = "the sky is blue",
-return "blue is sky the".
-
-## 186. Reverse Words in a String II
-Given an input string, reverse the string word by word. A word is defined as a sequence of non-space characters.
-
-The input string does not contain leading or trailing spaces and the words are always separated by a single space.
-
-For example,
-Given s = "the sky is blue",
-return "blue is sky the".
-
-Could you do it in-place without allocating extra space?
-
-## 557. Reverse Words in a String III
-Given a string, you need to reverse the order of characters in each word within a sentence while still preserving whitespace and initial word order.
-
-Example 1:
-Input: "Let's take LeetCode contest"
-Output: "s'teL ekat edoCteeL tsetnoc"
-Note: In the string, each word is separated by single space and there will not be any extra space in the string.
-
-#### Solution
-- Without restriction 151 and 557, the problem is easy. When with restriction like 186, we need to do it in-place, we can first reverse the whole string in-place and reverse each word in-place.
-
----
-
 ## 139. Word Break (Medium)
 Given a non-empty string s and a dictionary wordDict containing a list of non-empty words, determine if s can be segmented into a space-separated sequence of one or more dictionary words. You may assume the dictionary does not contain duplicate words.
 
@@ -525,4 +494,36 @@ You may assume beginWord and endWord are non-empty and are not the same.
 
 #### Solution
 - Tried to modify Word Ladder I (version 1), but got TLE.
--
+
+---
+
+## 151. Reverse Words in a String
+Given an input string, reverse the string word by word.
+
+For example,
+Given s = "the sky is blue",
+return "blue is sky the".
+
+## 186. Reverse Words in a String II
+Given an input string, reverse the string word by word. A word is defined as a sequence of non-space characters.
+
+The input string does not contain leading or trailing spaces and the words are always separated by a single space.
+
+For example,
+Given s = "the sky is blue",
+return "blue is sky the".
+
+Could you do it in-place without allocating extra space?
+
+## 557. Reverse Words in a String III
+Given a string, you need to reverse the order of characters in each word within a sentence while still preserving whitespace and initial word order.
+
+Example 1:
+Input: "Let's take LeetCode contest"
+Output: "s'teL ekat edoCteeL tsetnoc"
+Note: In the string, each word is separated by single space and there will not be any extra space in the string.
+
+#### Solution
+- Without restriction 151 and 557, the problem is easy. When with restriction like 186, we need to do it in-place, we can first reverse the whole string in-place and reverse each word in-place.
+
+---
