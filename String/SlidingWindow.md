@@ -1,3 +1,65 @@
+## 76. Minimum Window Substring
+Given a string S and a string T, find the minimum window in S which will contain all the characters in T in complexity O(n).
+
+For example,
+S = "ADOBECODEBANC"
+T = "ABC"
+Minimum window is "BANC".
+
+Note:
+If there is no such window in S that covers all characters in T, return the empty string "".
+
+If there are multiple such windows, you are guaranteed that there will always be only one unique minimum window in S.
+
+#### Solution
+Sliding Window经典题
+
+**关键是即使map.get(ch) <= 0 也要持续更新value, 这样在回退的时候方便统计**
+
+Attempts: 3
+~~~
+public class Solution {
+    public String minWindow(String s, String t) {
+        if (t == null || s == null || s.length() < t.length())  return "";
+
+        int lens = s.length();
+        int lent = t.length();
+        Map<Character, Integer> map = new HashMap<Character, Integer>();
+        for (int i = 0; i < lent; i++) {
+            char ch = t.charAt(i);
+            map.put(ch, map.getOrDefault(ch, 0) + 1);
+        }
+
+        int i = 0;
+        int j = 0;
+        int count = map.size();
+        String ans = null;
+        while (j < lens) {
+            char chj = s.charAt(j);
+            if (map.containsKey(chj)) {
+                map.put(chj, map.get(chj) - 1);
+                if (map.get(chj) == 0) count--;
+            }
+            while (count == 0) {
+                // update ans
+                if (ans == null || j - i + 1 < ans.length()) ans = s.substring(i, j + 1);
+
+                char chi = s.charAt(i);
+                if (map.containsKey(chi)) {
+                    if (map.get(chi) == 0) count++;
+                    map.put(chi, map.get(chi) + 1);
+                }
+                i++;
+            }
+
+            j++;
+        }
+
+        return ans == null ? "" : ans;
+    }
+}
+~~~
+
 ## 567. Permutation in String
 Given two strings s1 and s2, write a function to return true if s2 contains the permutation of s1. In other words, one of the first string's permutations is the substring of the second string.
 

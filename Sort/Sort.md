@@ -1,5 +1,5 @@
 
-## 75. Sort Colors
+## 75. Sort Colors (Medium)
 Given an array with n objects colored red, white or blue, sort them so that objects of the same color are adjacent, with the colors in the order red, white and blue.
 
 Here, we will use the integers 0, 1, and 2 to represent the color red, white, and blue respectively.
@@ -17,6 +17,10 @@ Could you come up with an one-pass algorithm using only constant space?
 
 #### Solution
 One pass with swap.
+
+**容易出错的点：**
+1. 在swap之后，由于不知道left和right的数字是不是0,2，所以不能直接移动left和right指针，要做判断（或者提前处理好left和right指针）
+2. 遇到1的时候，移动遍历的指针
 
 ~~~
 public class Solution {
@@ -63,7 +67,7 @@ sort color，和lc的区别是sort的是对象数组，需要自己写comparator
 
 ---
 
-## 280. Wiggle Sort (Medium)
+## 280. Wiggle Sort (Medium) *
 Given an unsorted array nums, reorder it in-place such that nums[0] <= nums[1] >= nums[2] <= nums[3]....
 
 For example, given nums = [3, 5, 2, 1, 6, 4], one possible answer is [1, 6, 2, 5, 3, 4].
@@ -73,7 +77,9 @@ Refer to this [discussion](https://discuss.leetcode.com/topic/23871/java-o-n-sol
 * For odd position, if the number is smaller than its prev number, swap it with its prev number.
 * For even position, if the number is bigger than its prev number, swap it with its prev number.
 
-**如何想到O(n)的方法是关键**
+笨方法是先排序再按要求重组位置<br>
+**这题没有要求break ties, 所以如何想到O(n)的方法是关键** <br>
+要求break ties的详见 Wiggle Sort II (Medium)
 
 ~~~
 public class Solution {
@@ -102,7 +108,7 @@ public class Solution {
 }
 ~~~
 
-## 324. Wiggle Sort II (Medium)
+## 324. Wiggle Sort II (Medium) *
 Given an unsorted array nums, reorder it such that nums[0] < nums[1] > nums[2] < nums[3]....
 
 Example:
@@ -122,11 +128,128 @@ Compared with 280. Wiggle Sort, this question adds one more requirement that no 
 2. Instead of sorting the array with O(nlogn) time complexity, we can find the medium in O(n) time and put the number smaller than medium into the left part and numbers bigger than medium into the right part. How to find the medium in O(n) time? It is what in 215. Kth Largest Element in an Array. We can use quick sort. Since every time we abandon half of the array, the time complexity is n + n/2 + n/4 + ... + 1 = 2n - 1 = O(n). <br>
 Please refer to this [discussion](https://discuss.leetcode.com/topic/41464/step-by-step-explanation-of-index-mapping-in-java/2).
 
+笨方法是先排序再按要求重组位置<br>
+**如何做到O(n)的时间** <br>
+**得到mid之后，先重新组织原数组，然后把mid放在num[0]，然后从左到右放大数，最后从右到左放小数**
 
+~~~
+public class Solution {
+    public void wiggleSort(int[] nums) {
+        if (nums == null || nums.length == 0) return;
+        int mid = findKthNumber(nums, 0, nums.length - 1, (nums.length - 1) / 2);
+
+        int[] sortedNums = new int[nums.length];
+        Arrays.fill(sortedNums, mid);
+
+        int left = 0;
+        int right = nums.length - 1;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] > mid) {
+                sortedNums[left++] = nums[i];
+            }
+            else if (nums[i] < mid) {
+                sortedNums[right--] = nums[i];
+            }
+        }
+
+        // put the mid number at pos 0
+        nums[0] = mid;
+
+        // fill the odd pos from left to right
+        int index = 0;
+        while (index < nums.length / 2) {
+            nums[2 * index + 1] = sortedNums[index];
+            index++;
+        }
+
+        // fill the even pos from right to left
+        index = nums.length - 1;
+        while (index > nums.length / 2) {
+            nums[(index - nums.length / 2) * 2] = sortedNums[index];
+            index--;
+        }
+
+    }
+
+    private int findKthNumber(int[] nums, int start, int end, int k) {
+        int left = start;
+        int pivot = end;
+        for (int i = start; i < end; i++) {
+            if (nums[i] <= nums[pivot]) {
+                swap(nums, left, i);
+                left++;
+            }
+        }
+
+        swap(nums, left, pivot);
+        pivot = left;
+
+        if (pivot == k) return nums[pivot];
+        else if (pivot > k) return findKthNumber(nums, start, pivot - 1, k);
+        return findKthNumber(nums, pivot + 1, end, k);
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+}
+~~~
+
+## 215. Kth Largest Element in an Array
+Find the kth largest element in an unsorted array. Note that it is the kth largest element in the sorted order, not the kth distinct element.
+
+For example,
+Given [3,2,1,5,6,4] and k = 2, return 5.
+
+Note:
+You may assume k is always valid, 1 ≤ k ≤ array's length.
+
+#### Solution
+Wiggle Sort在找mid的时候用到了partition (on avg O(n))
+这题也是用同样的方法
+
+~~~
+public class Solution {
+    public int findKthLargest(int[] nums, int k) {
+        return quickPartition(nums, 0, nums.length - 1, nums.length - k);
+    }
+
+    public int quickPartition(int[] nums, int start, int end, int k) {
+        int pivot = end;
+        int left = start;
+
+        for (int i = start; i < end; i++) {
+            if (nums[i] <= nums[pivot]) {
+                swap(nums, i, left);
+                left++;
+            }
+        }
+        swap(nums, left, pivot);
+        pivot = left;
+
+        if (k == pivot) return nums[pivot];
+        else if (k > pivot) {
+            return quickPartition(nums, pivot + 1, end, k);
+        }
+
+        return quickPartition(nums, start, pivot - 1, k);
+
+        // return Integer.MAX_VALUE;
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+}
+~~~
 
 ---
 
-## 148. Sort List
+## 148. Sort List (Medium)
 Sort a linked list in O(n log n) time using constant space complexity.
 
 #### Solution

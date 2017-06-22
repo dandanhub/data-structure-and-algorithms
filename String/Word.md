@@ -73,8 +73,10 @@ Use a HashMap<String, LinkedList<String>> map to store word breaks of substrings
 **Complexity Analysis**
 Time: worst case, call backtrack func to check every suffixes of s (fixed end), m times.
 Each time, iterate the whole dict and compare string nk.
-Check discussion [here](https://stackoverflow.com/questions/21273505/memoization-algorithm-time-complexity).
+Check discussion [here](https://stackoverflow.com/questions/21273505/memoization-algorithm-time-complexity). <br>
 Space: O(kn) store the word as set.
+
+**s.startsWith()**
 
 ~~~
 public class Solution {
@@ -138,6 +140,13 @@ What if we cannot allocate new space, then mark visited or not by set board in-p
 **Complexity Analysis**
 Time complexity: exponential O(mn * 2^mn)
 Space complexity: O(mn)
+
+Note Always consider the test case
+~~~
+["a"]
+["a"]
+~~~
+所以检测的时候先检查word.charAt(0) == board[i][j], 然后从index 1开始backtrack.
 
 ~~~
 public class Solution {
@@ -494,6 +503,7 @@ You may assume beginWord and endWord are non-empty and are not the same.
 
 #### Solution
 - Tried to modify Word Ladder I (version 1), but got TLE.
+- Build graph or two end BFS.
 
 ---
 
