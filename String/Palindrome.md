@@ -321,8 +321,82 @@ Output:
 
 Explanation:
 One longest palindrome that can be built is "dccaccd", whose length is 7.
-~~~~
+~~~
 
 #### Solution
 1. 笨方法也是扫描两边，第一遍统计每个单词出现的频率，第二遍数数
 2. One pass, 类似于266，用HashSet, char不在set里面，把char加进来，char在set里面，说明当前的char出现第二次了，count += 2, 最后如果set不为空的话，说明至少有一个char落单了，count += 1
+
+## 336. Palindrome Pairs
+Given a list of unique words, find all pairs of distinct indices (i, j) in the given list, so that the concatenation of the two words, i.e. words[i] + words[j] is a palindrome.
+
+Example 1:
+Given words = ["bat", "tab", "cat"]
+Return [[0, 1], [1, 0]]
+The palindromes are ["battab", "tabbat"]
+Example 2:
+Given words = ["abcd", "dcba", "lls", "s", "sssll"]
+Return [[0, 1], [1, 0], [3, 2], [2, 4]]
+The palindromes are ["dcbaabcd", "abcddcba", "slls", "llssssll"]
+
+#### Solution
+1. Brute force, check every pair of string, time complexity O(n^2k)
+2. Brute force, for every word, check whether any str that can make the word a valid palindrome exists, time complexity O(nk^2)
+
+**处理“”的edge cases** <br>
+**去除重复** （偷懒用了Set）
+
+~~~
+public class Solution {
+    public List<List<Integer>> palindromePairs(String[] words) {
+        if (words == null || words.length == 0) return new ArrayList<List<Integer>>();
+
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        for (int i = 0; i < words.length; i++) {
+            map.put(words[i], i);
+        }
+
+        Set<List<Integer>> set = new HashSet<List<Integer>>();
+        for (int i = 0; i < words.length; i++) {
+            String word = words[i];
+            for (int j = 0; j <= word.length(); j++) {
+                String prefix = word.substring(0, j);
+                String suffix = word.substring(j);
+                if (isValidPalindrome(prefix)) {
+                    StringBuilder sb = new StringBuilder(suffix);
+                    String str = sb.reverse().toString();
+                    if (map.containsKey(str) && map.get(str) != i) {
+                        List<Integer> list = new ArrayList<Integer>();
+                        list.add(map.get(str));
+                        list.add(i);
+                        set.add(list);
+                    }
+                }
+                if (isValidPalindrome(suffix)) {
+                    StringBuilder sb = new StringBuilder(prefix);
+                    String str = sb.reverse().toString();
+                    if (map.containsKey(str) && map.get(str) != i) {
+                        List<Integer> list = new ArrayList<Integer>();
+                        list.add(i);
+                        list.add(map.get(str));
+                        set.add(list);
+                    }
+                }
+            }
+        }
+
+        return new ArrayList<List<Integer>>(set);
+    }
+
+    private boolean isValidPalindrome(String word) {
+        int i = 0;
+        int j = word.length() - 1;
+        while (i < j) {
+            if (word.charAt(i++) != word.charAt(j--)) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+~~~
