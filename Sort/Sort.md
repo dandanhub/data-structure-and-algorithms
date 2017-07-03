@@ -329,7 +329,7 @@ public class Solution {
 }
 ~~~
 
-## 315. Count of Smaller Numbers After Self (Hard) (Google)
+## 315. Count of Smaller Numbers After Self (Hard G)
 You are given an integer array nums and you have to return a new counts array. The counts array has the property where counts[i] is the number of smaller elements to the right of nums[i].
 
 Example:
@@ -341,6 +341,71 @@ To the right of 2 there is only 1 smaller element (1).
 To the right of 6 there is 1 smaller element (1).
 To the right of 1 there is 0 smaller element.
 Return the array [2, 1, 1, 0].
+~~~
+
+#### Solution
+Merge Sort is stable sorting algorithm. We can do counting when merging.
+
+Attempt: 5 (bug 1 forgot to initialize list, bug 2 boundary)
+~~~
+public class Solution {
+    class NumPos {
+        int val;
+        int pos;
+
+        public NumPos(int val, int pos) {
+            this.val = val;
+            this.pos = pos;
+        }
+    }
+
+    public List<Integer> countSmaller(int[] nums) {
+        List<Integer> list = new ArrayList<Integer>();
+        if (nums == null || nums.length == 0) return list;
+
+        NumPos[] array = new NumPos[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            array[i] = new NumPos(nums[i], i);
+            list.add(0); // do not forget to add 0 into list
+        }
+        mergeSort(array, list);
+
+        return list;
+    }
+
+    private void mergeSort(NumPos[] nums, List<Integer> list) {
+        if (nums.length == 1) return;
+
+        int mid = nums.length / 2;
+        NumPos[] left = new NumPos[mid];
+        for (int i = 0; i < left.length; i++) {
+            left[i] = nums[i];
+        }
+
+        NumPos[] right = new NumPos[nums.length - mid];
+        for (int i = 0; i < right.length; i++) {
+            right[i] = nums[mid + i];
+        }
+
+        mergeSort(left, list);
+        mergeSort(right, list);
+
+        int i = 0, j = 0;
+        int m = left.length, n = right.length;
+        while (i < m || j < n) {
+            if (j == n || (i < m && left[i].val <= right[j].val)) { // check the boundary carefully
+                nums[i + j] = left[i];
+                int pos = left[i].pos;
+                list.set(pos, list.get(pos) + j);
+                i++;
+            }
+            else {
+                nums[i + j] = right[j];
+                j++;
+            }
+        }
+    }
+}
 ~~~
 
 ---

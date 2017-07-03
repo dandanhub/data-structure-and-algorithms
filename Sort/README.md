@@ -4,6 +4,10 @@ The codes are driven by CMU course 08-722 Data Structures for Application Progra
 **About Arrays.sort() function in Java**
 Java sort in Arrays, implementation note: The sorting algorithm is a Dual-Pivot Quicksort by Vladimir Yaroslavskiy, Jon Bentley, and Joshua Bloch. This algorithm offers O(n log(n)) performance on many data sets that cause other quicksorts to degrade to quadratic performance, and is typically faster than traditional (one-pivot) Quicksort implementations.
 
+![](sorting.jpeg)
+
+1. Selection sort not stable A = {3, 3, 1}
+2. 
 
 ## 296. Best Meeting Point (Hard) *
 A group of two or more people wants to meet and minimize the total travel distance. You are given a 2D grid of values 0 or 1, where each 1 marks the home of someone in the group. The distance is calculated using Manhattan Distance, where distance(p1, p2) = |p2.x - p1.x| + |p2.y - p1.y|.

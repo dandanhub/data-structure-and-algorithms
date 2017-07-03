@@ -157,7 +157,7 @@ Output: 7 -> 8 -> 0 -> 7
 1. An intuitive solution is to reverse the two lists and then add from the lest significant digit.
 2. If we cannot modify the input, instead we can use a stack to achieve the same result as reversing lists.
 
-# RandomLinkedList.java
+## RandomLinkedList.java
 The code is for leetcode 138. Copy List with Random Pointer.
 
 A linked list is given such that each node contains an additional random pointer
@@ -176,8 +176,59 @@ a) 1st iteration: duplicate each node and insert duplicated note right behind th
 b) 2nd iteration: copy random pointer by using cur.next.random = cur.random.next.
 c) 3rd iteration: separate the list to two list: the old one and the new copy
 
-## 23. Merge k Sorted Lists
+## 23. Merge k Sorted Lists (Hard)
 Merge k sorted linked lists and return it as one sorted list. Analyze and describe its complexity.
 
 #### Solution
 Use priority queue to select the next smallest number
+
+## 109. Convert Sorted List to Binary Search Tree
+Given a singly linked list where elements are sorted in ascending order, convert it to a height balanced BST.
+
+#### Solution
+找到中间节点，然后递归。
+
+~~~
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode(int x) { val = x; }
+ * }
+ */
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+public class Solution {
+    public TreeNode sortedListToBST(ListNode head) {
+        if (head == null) return null;
+        if (head.next == null) return new TreeNode(head.val);
+
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+
+        ListNode prev = dummy;
+        ListNode p1 = head;
+        ListNode p2 = head;
+        while (p2 != null  && p2.next != null) {
+            prev = prev.next;
+            p1 = p1.next;
+            p2 = p2.next.next;
+        }
+
+        prev.next = null;
+        TreeNode root = new TreeNode(p1.val);
+        if (prev != dummy) root.left = sortedListToBST(head);
+        root.right = sortedListToBST(p1.next);
+
+        return root;
+    }
+}
+~~~
