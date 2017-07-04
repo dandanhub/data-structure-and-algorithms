@@ -1,3 +1,59 @@
+## 30. Substring with Concatenation of All Words
+You are given a string, s, and a list of words, words, that are all of the same length. Find all starting indices of substring(s) in s that is a concatenation of each word in words exactly once and without any intervening characters.
+
+For example, given:
+s: "barfoothefoobarman"
+words: ["foo", "bar"]
+
+You should return the indices: [0,9].
+(order does not matter).
+
+#### Solution
+Sliding Window加上暴力破解 <br>
+**如何加快速度是重点**
+
+~~~
+public class Solution {
+    public List<Integer> findSubstring(String s, String[] words) {
+        List<Integer> list = new ArrayList<Integer>();
+        if (s == null || s.length() == 0) return list;
+        if (words == null || words.length == 0) return list;
+
+        int n = words.length;
+        int m = words[0].length();
+
+        if (s.length() < m * n) return list;
+
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        for (int i = 0; i < n; i++) {
+            String word = words[i];
+            map.put(word, map.getOrDefault(word, 0) + 1);
+        }
+
+        HashMap<String, Integer> curMap = new HashMap<String, Integer>();
+        int curCount = n;
+        for (int i = 0; i <= s.length() - m * n; i++) {
+            for (int j = 0; j < n; j++) {
+                String str = s.substring(i + j * m, i + j * m + m);
+                if (map.containsKey(str) && curMap.getOrDefault(str, 0) < map.get(str)) {
+                    curMap.put(str, curMap.getOrDefault(str, 0) + 1);
+                    curCount--;
+                }
+                else {
+                    break;
+                }
+            }
+            if (curCount == 0) list.add(i);
+            curCount = n;
+            curMap.clear();
+        }
+
+        return list;
+
+    }
+}
+~~~
+
 ## 239. Sliding Window Maximum (Hard)*
 Given an array nums, there is a sliding window of size k which is moving from the very left of the array to the very right. You can only see the k numbers in the window. Each time the sliding window moves right by one position.
 
