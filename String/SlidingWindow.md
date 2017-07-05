@@ -304,3 +304,68 @@ Output:
 
 The longest substring is "ababb", as 'a' is repeated 2 times and 'b' is repeated 3 times.
 ~~~
+
+## 3. Longest Substring Without Repeating Characters
+Given a string, find the length of the longest substring without repeating characters.
+
+Examples:
+
+Given "abcabcbb", the answer is "abc", which the length is 3.
+
+Given "bbbbb", the answer is "b", with the length of 1.
+
+Given "pwwkew", the answer is "wke", with the length of 3. Note that the answer must be a substring, "pwke" is a subsequence and not a substring.
+
+#### Solution
+
+用char[256]数组来记录已有的char
+~~~
+public class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        if (s == null || s.length() == 0) return 0;
+        int i = 0, j = 0;
+        int len = 0;
+        int[] dict = new int[256];
+        while (j < s.length()) {
+            char chj = s.charAt(j);
+            if (dict[chj] == 0) {
+                dict[chj]++;
+                len = Math.max(len, j - i + 1);
+                j++;
+            }
+            else {
+                while (dict[chj] > 0) {
+                    char chi = s.charAt(i);
+                    dict[chi]--;
+                    i++;
+                }
+            }
+        }       
+        return len;
+    }
+}
+~~~
+
+用HashSet来记录已有的char
+~~~
+public class Solution {
+    public int lengthOfLongestSubstring(String s) {
+        if (s == null || s.length() == 0) return 0;
+        Set<Character> set = new HashSet<Character>();
+        int i = 0, j = 0, len = s.length();
+        int ans = 0;
+        while (j < len) {
+            char cj = s.charAt(j);
+            while (set.contains(cj)) {
+                char ci = s.charAt(i);
+                set.remove(ci);
+                i++;
+            }
+            ans = Math.max(ans, j - i + 1);
+            set.add(cj);
+            j++;
+        }
+        return ans;
+    }
+}
+~~~

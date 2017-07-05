@@ -337,7 +337,8 @@ Given s = "abc", return [].
 #### Solution
 Backtracking
 
-方法1： 用Map统计字符，用List做Backtracking
+方法1： 用Map统计字符，用List做Backtracking <br>
+注意错误写法char ch = '';因为char必须严格遵守一个字符的定义
 ~~~
 public class Solution {
     public List<String> generatePalindromes(String s) {
