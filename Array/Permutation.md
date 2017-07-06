@@ -335,7 +335,9 @@ Given s = "aabb", return ["abba", "baab"].
 Given s = "abc", return [].
 
 #### Solution
-Backtracking
+We can solve the problem in two steps:
+1. Find all characters occur along with its occurring time using HashMap. While doing this, we can examine whether a string can form a valid permutation or not, if invalid, simply return empty list.
+2. Construct string (characters) permutation for the first half of the palindrome using backtracking. Construct an answer and add it to result list.
 
 方法1： 用Map统计字符，用List做Backtracking <br>
 注意错误写法char ch = '';因为char必须严格遵守一个字符的定义

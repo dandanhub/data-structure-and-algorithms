@@ -252,6 +252,23 @@ Return 1 since the palindrome partitioning ["aa","b"] could be produced using 1 
 2. 可以提前计算一个palindrome lookup table, if (s[i] == s[j]) pal[i][j] = p[i+1][j-1]. **注意2维循环的时候i从高位到低位，j从低位到高位**，这样可以提高速度到O(n^2)
 3. Discussion top solution 给出了O(n^2) time, O(n) space的方法
 
+Two data structures are used:
+`boolean[][] pal = new boolean[len][len];`
+`int[] dp = new int[len];`
+1. `pal[i][j]` means whether a substring from i to j (inclusive) is a panlindrome or not.
+2. `dp[i]` means the shortest cut of substring from 0 to i (inclusive).
+3. The dynamic transition formula is:
+~~~~
+if (s.charAt(j) == s.charAt(i) && (j + 1 >= i - 1 || pal[j + 1][i - 1] == true)) {
+      // substring from i to j (inclusive) is a palindrome
+      dp[i] = Math.min(dp[i], j == 0 ? 0 : dp[j - 1] + 1);
+      pal[j][i] = true;
+}
+else {
+      dp[i] = Math.min(dp[i], dp[i - 1] + 1);
+}
+~~~~
+
 Attempt: 没有想出O(n^2)的方法
 ~~~
 public class Solution {
@@ -290,6 +307,18 @@ public class Solution {
         return dp[len - 1];
     }
 }
+
+/*
+test case
+""
+"a"
+"aa"
+"ab"
+"aacecaaa"
+"aaaaaaa"
+"aaacec"
+"abcddcbaaa"
+*/
 ~~~
 
 ## 266. Palindrome Permutation (Easy)
@@ -326,6 +355,141 @@ One longest palindrome that can be built is "dccaccd", whose length is 7.
 #### Solution
 1. 笨方法也是扫描两边，第一遍统计每个单词出现的频率，第二遍数数
 2. One pass, 类似于266，用HashSet, char不在set里面，把char加进来，char在set里面，说明当前的char出现第二次了，count += 2, 最后如果set不为空的话，说明至少有一个char落单了，count += 1
+
+## 267. Palindrome Permutation II
+Given a string s, return all the palindromic permutations (without duplicates) of it. Return an empty list if no palindromic permutation could be form.
+
+For example:
+
+Given s = "aabb", return ["abba", "baab"].
+
+Given s = "abc", return [].
+
+#### Solution
+We can solve the problem in two steps:
+1. Find all characters occur along with its occurring time using HashMap. While doing this, we can examine whether a string can form a valid permutation or not, if invalid, simply return empty list.
+2. Construct string (characters) permutation for the first half of the palindrome using backtracking. Construct an answer and add it to result list.
+
+方法1： 用Map统计字符，用List做Backtracking <br>
+注意错误写法char ch = '';因为char必须严格遵守一个字符的定义
+~~~
+public class Solution {
+    public List<String> generatePalindromes(String s) {
+        List<String> ans = new ArrayList<String>();
+        if (s == null) return ans;
+
+        Map<Character, Integer> map = new HashMap<Character, Integer>();
+        Set<Character> set = new HashSet<Character>();
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            map.put(ch, map.getOrDefault(ch, 0) + 1);
+
+            if (set.contains(ch)) set.remove(ch);
+            else set.add(ch);
+        }
+
+        if (set.size() > 1) return ans;
+
+        // if there is a valid char with lonely 1 occurence set it to ch
+        Character ch = null;
+        if (set.size() == 1) ch = set.iterator().next();
+
+        // covert the map to char list and sort in lexicography order
+        List<Character> list = new ArrayList<Character>();
+        for (Map.Entry<Character, Integer> entry : map.entrySet()) {
+            for (int i = 0; i < entry.getValue() / 2; i++) list.add(entry.getKey());
+        }
+        Collections.sort(list);
+
+        helper(ans, list, new StringBuilder(), ch, new boolean[list.size()]);
+        return ans;
+    }
+
+    private void helper(List<String> ans, List<Character> list, StringBuilder sb, Character ch, boolean[] used) {
+        // base case
+        if (sb.length() == list.size()) {
+            String reversed = new StringBuilder(sb).reverse().toString();
+            StringBuilder newSb = new StringBuilder(sb);
+            if (ch != null) newSb.append(ch);
+            newSb.append(reversed);
+            ans.add(newSb.toString());
+            return;
+        }
+
+        // backtracking
+        for (int i = 0; i < list.size(); i++) {
+            if (used[i] || (i > 0 && list.get(i) == list.get(i - 1) && !used[i - 1])) {
+                continue;
+            }
+
+            sb.append(list.get(i));
+            used[i] = true;
+            helper(ans, list, sb, ch, used);
+            sb.deleteCharAt(sb.length() - 1);
+            used[i] = false;
+        }
+    }
+}
+~~~
+
+方法2：用int[256]数组统计字符，用char[]数组做bakctracking
+~~~
+public class Solution {
+    public List<String> generatePalindromes(String s) {
+        List<String> ans = new ArrayList<String>();
+        if (s == null) return ans;
+
+        int[] dict = new int[256];
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            dict[ch]++;
+        }
+
+        char[] chars = new char[s.length() / 2];
+        int index = 0;
+        boolean odd = false;
+        Character ch = null;
+        for (int i = 0; i < 256; i++) {
+            if (dict[i] % 2 != 0) {
+                if (odd) return ans;
+                odd = true;
+                ch = (char) i;
+            }
+            for (int j = 0; j < dict[i] / 2; j++) {
+                chars[index++] = (char) i;
+            }
+        }
+
+        helper(ans, chars, new StringBuilder(), ch, new boolean[s.length() / 2]);
+        return ans;
+    }
+
+    private void helper(List<String> ans, char[] chars, StringBuilder sb, Character ch, boolean[] used) {
+        // base case
+        if (sb.length() == chars.length) {
+            String reversed = new StringBuilder(sb).reverse().toString();
+            StringBuilder newSb = new StringBuilder(sb);
+            if (ch != null) newSb.append(ch);
+            newSb.append(reversed);
+            ans.add(newSb.toString());
+            return;
+        }
+
+        // backtracking
+        for (int i = 0; i < chars.length; i++) {
+            if (used[i] || (i > 0 && chars[i] == chars[i - 1] && !used[i - 1])) {
+                continue;
+            }
+
+            sb.append(chars[i]);
+            used[i] = true;
+            helper(ans, chars, sb, ch, used);
+            sb.deleteCharAt(sb.length() - 1);
+            used[i] = false;
+        }
+    }
+}
+~~~
 
 ## 336. Palindrome Pairs
 Given a list of unique words, find all pairs of distinct indices (i, j) in the given list, so that the concatenation of the two words, i.e. words[i] + words[j] is a palindrome.

@@ -157,25 +157,6 @@ Output: 7 -> 8 -> 0 -> 7
 1. An intuitive solution is to reverse the two lists and then add from the lest significant digit.
 2. If we cannot modify the input, instead we can use a stack to achieve the same result as reversing lists.
 
-## RandomLinkedList.java
-The code is for leetcode 138. Copy List with Random Pointer.
-
-A linked list is given such that each node contains an additional random pointer
-which could point to any node in the list or null.
-Return a deep copy of the list.
-##### Solution
-1. O(n) time and O(n) space.
-The naiive solution is to use a hash map which stores the mapping from random pointer
-in original list to its corresponding node in copy list.
-In such way, we can copy the random pointer in 2nd scan.
-2. O(n) time and O(1) space.
-A better solution from [this LeetCode discussion](https://discuss.leetcode.com/topic/7594/a-solution-with-constant-space-complexity-o-1-and-linear-time-complexity-o-n).
-"The idea is to associate the original node with its copy node in a single linked list.
-In this way, we don't need extra space to keep track of the new nodes."
-a) 1st iteration: duplicate each node and insert duplicated note right behind the original node
-b) 2nd iteration: copy random pointer by using cur.next.random = cur.random.next.
-c) 3rd iteration: separate the list to two list: the old one and the new copy
-
 ## 23. Merge k Sorted Lists (Hard)
 Merge k sorted linked lists and return it as one sorted list. Analyze and describe its complexity.
 
