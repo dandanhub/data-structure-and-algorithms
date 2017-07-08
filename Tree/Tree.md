@@ -188,11 +188,11 @@ public class Solution {
         }
 
          if (root.left != null) {
-            count += pathSumHelp(root.left, sum - root.val); // not including the curr node
+            count += pathSumHelp(root.left, sum - root.val); // including the curr node
         }
 
         if (root.right != null) {
-            count += pathSumHelp(root.right, sum - root.val); // not including the curr node
+            count += pathSumHelp(root.right, sum - root.val); // including the curr node
         }
 
         return count;
@@ -638,4 +638,73 @@ Runtime: O(n). Space complexity: O(log n)
 
 Binary Tree
 http://www.geeksforgeeks.org/check-if-leaf-traversal-of-two-binary-trees-is-same/
+~~~
+
+## 116. Populating Next Right Pointers in Each Node
+Given a binary tree
+~~~
+    struct TreeLinkNode {
+      TreeLinkNode *left;
+      TreeLinkNode *right;
+      TreeLinkNode *next;
+    }
+~~~
+Populate each next pointer to point to its next right node. If there is no next right node, the next pointer should be set to NULL.
+
+Initially, all next pointers are set to NULL.
+
+Note:
+
+You may only use constant extra space.
+You may assume that it is a perfect binary tree (ie, all leaves are at the same level, and every parent has two children).
+For example,
+Given the following perfect binary tree,
+~~~
+         1
+       /  \
+      2    3
+     / \  / \
+    4  5  6  7
+~~~
+
+After calling your function, the tree should look like:
+~~~
+         1 -> NULL
+       /  \
+      2 -> 3 -> NULL
+     / \  / \
+    4->5->6->7 -> NULL
+~~~
+
+#### Solution
+1. 两层while循环，第一个处理一层一层，第二个处理层内遍历
+2. 保存两个TreeLinkNode，一个是第一个while循环更新到下一层，另一个是第二个while循环更新到当前level的下一个结点
+
+~~~
+/**
+ * Definition for binary tree with next pointer.
+ * public class TreeLinkNode {
+ *     int val;
+ *     TreeLinkNode left, right, next;
+ *     TreeLinkNode(int x) { val = x; }
+ * }
+ */
+public class Solution {
+    public void connect(TreeLinkNode root) {
+        if (root == null) return;
+
+        TreeLinkNode curr = root;
+        while (curr != null) {
+            TreeLinkNode post = curr.left; // the first node in next level
+            TreeLinkNode prev = null;
+            while (curr != null && curr.left != null) {
+                if (prev != null) prev.next = curr.left;
+                curr.left.next = curr.right;
+                prev = curr.right; // save the right child of prev node
+                curr = curr.next;
+            }
+            curr = post;
+        }
+    }
+}
 ~~~
