@@ -129,144 +129,6 @@ public class Solution {
 }
 ~~~
 
-# DP
-## 10. Regular Expression Matching
-Implement regular expression matching with support for '.' and '\*'.
-
-~~~
-'.' Matches any single character.
-'*' Matches zero or more of the preceding element.
-
-The matching should cover the entire input string (not partial).
-
-The function prototype should be:
-bool isMatch(const char *s, const char *p)
-
-Some examples:
-isMatch("aa","a") → false
-isMatch("aa","aa") → true
-isMatch("aaa","aa") → false
-isMatch("aa", "a*") → true
-isMatch("aa", ".*") → true
-isMatch("ab", ".*") → true
-isMatch("aab", "c*a*b") → true
-~~~
-
-#### Solution
-Two dimensional DP, boolean dp[i][j] means whether substring of s(0, i) matches p(0, j).
-1. if s[i] == p[j] or p[j] == '.', dp[i][j] = dp[i-1][j-1]
-2. else if p[j] == '\*'
-- if s[i] != p[j-1], dp[i][j] = dp[i][j-2] (match a* zero time)
-- else dp[i][j] = dp[i][j-2] (match zero time) || dp[i][j-1] (match one time) || dp[i-1][j] (match multi times)
-
-~~~
-public class Solution {
-    public boolean isMatch(String s, String p) {
-        int slen = s.length();
-        int plen = p.length();
-        boolean[][] dp = new boolean[slen + 1][plen + 1];
-        dp[0][0] = true;
-
-        // 处理 a*
-        // b
-        // .*b*c 这种初始化 dp[0][1] = false, dp[0][2] = true
-        // bb* 直接返回
-        // b*b
-        for (int j = 0; j < plen - 1; j = j + 2) {
-            int next = j + 1;
-            if (p.charAt(next) == '*') {
-                dp[0][j + 1] = false;
-                dp[0][next + 1] = true;
-            }
-            else {
-                break;
-            }
-        }
-
-        for (int i = 1; i < slen + 1; i++) {
-            for (int j = 1; j < plen + 1; j++) {
-                if (s.charAt(i - 1) == p.charAt(j - 1)) {
-                    dp[i][j] = dp[i-1][j-1];
-                }
-                else if (p.charAt(j - 1) == '.') {
-                    dp[i][j] = dp[i-1][j-1];
-                }
-                else if (p.charAt(j - 1) == '*') {
-                    // "aaaac"
-                    // "a*."
-                    if (s.charAt(i - 1) == p.charAt(j - 2) || p.charAt(j - 2) == '.') {
-                        // dp[i][j] = dp[i][j-2] || dp[i][j-1] || dp[i-1][j];
-                        dp[i][j] = dp[i][j-2] || dp[i-1][j];
-                    }
-                    else { // a* 匹配0次
-                        dp[i][j] = dp[i][j-2];
-                    }
-                }
-            }
-        }
-        return dp[slen][plen];
-    }
-}
-~~~
-
-## 44. Wildcard Matching
-Implement wildcard pattern matching with support for '?' and '\*'.
-
-~~~
-'?' Matches any single character.
-'*' Matches any sequence of characters (including the empty sequence).
-
-The matching should cover the entire input string (not partial).
-
-The function prototype should be:
-bool isMatch(const char *s, const char *p)
-
-Some examples:
-isMatch("aa","a") → false
-isMatch("aa","aa") → true
-isMatch("aaa","aa") → false
-isMatch("aa", "*") → true
-isMatch("aa", "a*") → true
-isMatch("ab", "?*") → true
-isMatch("aab", "c*a*b") → false
-~~~
-
-#### Solution
-1. if s[i] == p[j] or p[j] == '?', dp[i][j] = dp[i-1][j-1]
-2. else if p[j] == '\*', dp[i][j] = dp[i][j-1] || dp[i-1][j]
-
-~~~
-public class Solution {
-    public boolean isMatch(String s, String p) {
-        // edge cases
-        if (s == null || p == null) return false;
-
-        int sl = s.length();
-        int pl = p.length();
-        boolean[][] dp = new boolean[sl + 1][pl + 1];
-        dp[0][0] = true;
-        for (int i = 1; i < pl + 1; i++) {
-            if (p.charAt(i - 1) == '*') dp[0][i] = true;
-            else break;
-        }
-
-        for (int i = 1; i < sl + 1; i++) { // bug
-            for (int j = 1; j < pl + 1; j++) { // bug
-                if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '?') {
-                    dp[i][j] = dp[i - 1][j - 1];
-                }
-                else if (p.charAt(j - 1) == '*') {
-                    dp[i][j] = dp[i][j - 1] || dp[i - 1][j];
-                }
-            }
-        }
-
-        return dp[sl][pl];
-    }
-}
-~~~
-
-
 # Misc
 ## 293. Flip Game (Easy)
 You are playing the following Flip Game with your friend: Given a string that contains only these two characters: + and -, you and your friend take turns to flip two consecutive "++" into "--". The game ends when a person can no longer make a move and therefore the other person will be the winner.
@@ -332,3 +194,55 @@ for (int i = 0; i < Math.min(tokens1.length, tokens2.length); i++) {
 ~~~~
 
 Think from the other side, compare at their max length, for the one which is shorter, simply set it to 0.
+
+## 482. License Key Formatting (Easy) (G)
+Now you are given a string S, which represents a software license key which we would like to format. The string S is composed of alphanumerical characters and dashes. The dashes split the alphanumerical characters within the string into groups. (i.e. if there are M dashes, the string is split into M+1 groups). The dashes in the given string are possibly misplaced.
+
+We want each group of characters to be of length K (except for possibly the first group, which could be shorter, but still must contain at least one character). To satisfy this requirement, we will reinsert dashes. Additionally, all the lower case letters in the string must be converted to upper case.
+
+So, you are given a non-empty string S, representing a license key to format, and an integer K. And you need to return the license key formatted according to the description above.
+
+Example 1:
+~~~
+Input: S = "2-4A0r7-4k", K = 4
+
+Output: "24A0-R74K"
+
+Explanation: The string S has been split into two parts, each part has 4 characters.
+~~~
+
+Example 2:
+~~~
+Input: S = "2-4A0r7-4k", K = 3
+
+Output: "24-A0R-74K"
+
+Explanation: The string S has been split into three parts, each part has 3 characters except the first part as it could be shorter as said above.
+~~~
+
+Note:
+The length of string S will not exceed 12,000, and K is a positive integer.
+String S consists only of alphanumerical characters (a-z and/or A-Z and/or 0-9) and dashes(-).
+String S is non-empty.
+
+#### Solution
+Java String替换字符 s.replacec("-","");
+~~~
+public class Solution {
+    public String licenseKeyFormatting(String S, int K) {
+        // delete - from input
+        String str = S.replace("-","").toUpperCase();
+        StringBuilder sb = new StringBuilder(str).reverse();
+        StringBuilder res = new StringBuilder();
+        // group char to be of length k, from right to left
+        for (int i = 0; i < sb.length(); i += K) {
+            res.append(sb.substring(i, Math.min(i + K, sb.length())));
+            res.append('-');
+        }
+
+        // remove the last '-'
+        if (res.length() > 0) res.deleteCharAt(res.length() - 1);
+        return res.reverse().toString();
+    }
+}
+~~~

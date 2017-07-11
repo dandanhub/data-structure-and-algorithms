@@ -1,3 +1,131 @@
+## 325. Maximum Size Subarray Sum Equals k
+Given an array nums and a target value k, find the maximum length of a subarray that sums to k. If there isn't one, return 0 instead.
+
+Note:
+The sum of the entire nums array is guaranteed to fit within the 32-bit signed integer range.
+
+Example 1:
+Given nums = [1, -1, 5, -2, 3], k = 3,
+return 4. (because the subarray [1, -1, 5, -2] sums to 3 and is the longest)
+
+Example 2:
+Given nums = [-2, -1, 2, 1], k = 1,
+return 2. (because the subarray [-1, 2] sums to 1 and is the longest)
+
+Follow Up:
+Can you do it in O(n) time?
+
+#### Solution
+直接能想到的就是O(n^2)的brute force的方法，要求O(n)如何解决 <br>
+类似的sum的问题，O(n)时间的要求，都可以考虑使用HashMap
+
+~~~
+public class Solution {
+    public int maxSubArrayLen(int[] nums, int k) {
+        // edge case
+        if (nums == null || nums.length == 0) return 0;
+        Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+        int sum = 0;
+        int len = 0;
+        map.put(sum, -1);
+        for (int i = 0; i < nums.length; i++) {
+            sum += nums[i];
+            if (map.containsKey(sum - k)) {
+                int left = map.get(sum - k);
+                len = Math.max(len, i - left);
+            }
+            map.putIfAbsent(sum, i);
+        }
+
+        return len;
+    }
+}
+~~~
+
+## 525. Contiguous Array
+Given a binary array, find the maximum length of a contiguous subarray with equal number of 0 and 1.
+
+Example 1:
+~~~
+Input: [0,1]
+Output: 2
+Explanation: [0, 1] is the longest contiguous subarray with equal number of 0 and 1.
+~~~
+Example 2:
+~~~
+Input: [0,1,0]
+Output: 2
+Explanation: [0, 1] (or [1, 0]) is a longest contiguous subarray with equal number of 0 and 1.
+~~~
+Note: The length of the given binary array will not exceed 50,000.
+
+#### Solution
+325的变形题目，用hashtable保存sum结果。需要注意的是，为了方便处理，遇到0的时候对sum--操作
+~~~
+public class Solution {
+
+    public int findMaxLength(int[] nums) {
+        if (nums == null || nums.length == 0) return 0;
+
+        Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+
+        int sum = 0;
+        map.put(0, -1);
+        int len = 0;
+
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] == 1) sum++;
+            else sum--;
+
+            if (map.containsKey(sum)) {
+                len = Math.max(len, i - map.get(sum));
+            }
+            else map.put(sum, i);
+        }
+
+        return len;
+    }
+}
+~~~
+
+## 209. Minimum Size Subarray Sum
+Given an array of n positive integers and a positive integer s, find the minimal length of a contiguous subarray of which the sum >= s. If there isn't one, return 0 instead.
+
+For example, given the array [2,3,1,2,4,3] and s = 7,
+the subarray [4,3] has the minimal length under the problem constraint.
+
+#### Solution
+Two pointers
+~~~
+public class Solution {
+    public int minSubArrayLen(int s, int[] nums) {
+        if (nums == null) {
+            return 0;
+        }
+
+        int sum = 0;
+        int len = Integer.MAX_VALUE;
+        int i = 0, j = 0;
+        while (j < nums.length) {
+            sum += nums[j];
+            j++;
+
+            // move left pointer
+            while (sum >= s) {
+                len = Math.min(len, j - i);
+                sum -= nums[i];
+                i++;
+            }
+        }
+
+        return len == Integer.MAX_VALUE ? 0 : len;
+    }
+}
+~~~
+
+---
+
+
 ## 41. First Missing Positive
 Given an unsorted integer array, find the first missing positive integer.
 
@@ -178,6 +306,50 @@ public class Solution {
         }
 
         return ans;
+    }
+}
+~~~
+
+## 621. Task Scheduler
+Given a char array representing tasks CPU need to do. It contains capital letters A to Z where different letters represent different tasks.Tasks could be done without original order. Each task could be done in one interval. For each interval, CPU could finish one task or just be idle.
+
+However, there is a non-negative cooling interval n that means between two same tasks, there must be at least n intervals that CPU are doing different tasks or just be idle.
+
+You need to return the least number of intervals the CPU will take to finish all the given tasks.
+
+Example 1:
+~~~
+Input: tasks = ['A','A','A','B','B','B'], n = 2
+Output: 8
+Explanation: A -> B -> idle -> A -> B -> idle -> A -> B.
+~~~
+
+Note:
+The number of tasks is in the range [1, 10000].
+The integer n is in the range [0, 100].
+
+#### Solution
+出现次数最高的char决定了最终长度
+~~~
+public class Solution {
+    public int leastInterval(char[] tasks, int n) {
+        if (tasks == null || tasks.length == 0) return 0;
+        if (n <= 0) return tasks.length;
+
+        // calculate dict freq
+        int[] dict = new int[26];
+        for (int i = 0; i < tasks.length; i++) {
+            dict[tasks[i] - 'A']++;
+        }
+
+        Arrays.sort(dict);
+        int i = 25;
+        // find the count of char that have the highest freq
+        while (i > 0 && dict[i] == dict[i - 1]) {
+            i--;
+        }
+        // if ((26 - i == n && i > 0 && dict[i - 1] != 0) || 26 - i > n) return tasks.length;
+        return Math.max(tasks.length, (n + 1) * (dict[25] - 1) + (26 - i));
     }
 }
 ~~~

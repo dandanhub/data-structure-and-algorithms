@@ -1,3 +1,176 @@
+## 425. Word Squares
+Given a set of words (without duplicates), find all word squares you can build from them.
+
+A sequence of words forms a valid word square if the kth row and column read the exact same string, where 0 ≤ k < max(numRows, numColumns).
+
+For example, the word sequence ["ball","area","lead","lady"] forms a word square because each word reads the same both horizontally and vertically.
+
+b a l l
+a r e a
+l e a d
+l a d y
+Note:
+There are at least 1 and at most 1000 words.
+All words will have the exact same length.
+Word length is at least 1 and at most 5.
+Each word contains only lowercase English alphabet a-z.
+Example 1:
+~~~
+Input:
+["area","lead","wall","lady","ball"]
+
+Output:
+[
+  [ "wall",
+    "area",
+    "lead",
+    "lady"
+  ],
+  [ "ball",
+    "area",
+    "lead",
+    "lady"
+  ]
+]
+
+Explanation:
+The output consists of two word squares. The order of output does not matter (just the order of words in each word square matters).
+~~~
+
+Example 2:
+~~~
+Input:
+["abat","baba","atan","atal"]
+
+Output:
+[
+  [ "baba",
+    "abat",
+    "baba",
+    "atan"
+  ],
+  [ "baba",
+    "abat",
+    "baba",
+    "atal"
+  ]
+]
+
+Explanation:
+The output consists of two word squares. The order of output does not matter (just the order of words in each word square matters).
+~~~
+
+#### Solution
+Method 1: Brute force, backtracking, no data strcutre to store prefix mapping, TLE
+
+~~~
+public class Solution {
+    public List<List<String>> wordSquares(String[] words) {
+        List<List<String>> ans = new ArrayList<List<String>>();
+        if (words == null || words.length == 0) return ans;
+        Map<String, List<String>> cache = new HashMap<String, List<String>>();
+        helper(ans, new ArrayList<String>(), words, "");
+        return ans;
+    }
+
+    private void helper(List<List<String>> ans, List<String> list, String[] words, String prefix) {
+        for (int i = 0; i < words.length; i++) {
+            String str = words[i];
+            if (str.startsWith(prefix)) {
+                list.add(str);
+
+                if (list.size() == words[0].length()) {
+                    // found a valid ans
+                    ans.add(new ArrayList<String>(list));
+                }
+                else {
+                    StringBuilder sb = new StringBuilder();
+                    for (String item : list) {
+                        sb.append(item.charAt(list.size()));
+                    }
+                    helper(ans, list, words, sb.toString());
+                }
+                list.remove(list.size() - 1);
+            }
+        }
+    }
+}
+~~~
+
+这道题是之前那道Valid Word Square的延伸，由于要求出所有满足要求的单词平方，所以难度大大的增加了，不要幻想着可以利用之前那题的解法来暴力破解，OJ不会答应的。那么根据以往的经验，对于这种要打印出所有情况的题的解法大多都是用递归来解，那么这题的关键是根据前缀来找单词，我们如果能利用合适的数据结构来建立前缀跟单词之间的映射，使得我们能快速的通过前缀来判断某个单词是否存在，这是解题的关键。对于建立这种映射，这里主要有两种方法，一种是利用哈希表来建立前缀和所有包含此前缀单词的集合之前的映射，第二种方法是建立前缀树Trie，顾名思义，前缀树专门就是为这种问题设计的。那么我们首先来看第一种方法，用哈希表来建立映射的方法，我们就是取出每个单词的所有前缀，然后将该单词加入该前缀对应的集合中去，然后我们建立一个空的nxn的char矩阵，其中n为单词的长度，我们的目标就是来把这个矩阵填满，我们从0开始遍历，我们先取出长度为0的前缀，即空字符串，由于我们在建立映射的时候，空字符串也和每个单词的集合建立了映射，然后我们遍历这个集合，用遍历到的单词的i位置字符，填充矩阵mat[i][i]，然后j从i+1出开始遍历，对应填充矩阵mat[i][j]和mat[j][i]，然后我们根据第j行填充得到的前缀，到哈希表中查看有没单词，如果没有，就break掉，如果有，则继续填充下一个位置。最后如果j==n了，说明第0行和第0列都被填好了，我们再调用递归函数，开始填充第一行和第一列，依次类推，直至填充完成，参见代码如下：
+
+Method 2 : Backtracking, build prefix map, 161ms
+~~~
+public class Solution {
+    public List<List<String>> wordSquares(String[] words) {
+        List<List<String>> ans = new ArrayList<List<String>>();
+        if (words == null || words.length == 0) return ans;
+
+        Map<String, Set<String>> map = new HashMap<String, Set<String>>();
+        for (int i = 0; i < words.length; i++) {
+            String str = words[i];
+            for (int j = 0; j <= str.length(); j++) {
+                String prefix = str.substring(0, j);
+                if (map.containsKey(prefix)) {
+                    Set<String> set = map.get(prefix);
+                    set.add(str);
+                }
+                else {
+                    Set<String> set = new HashSet<String>();
+                    set.add(str);
+                    map.put(prefix, set);
+                }
+            }
+        }
+        helper(ans, new ArrayList<String>(), map, "");
+        return ans;
+    }
+
+    private void helper(List<List<String>> ans, List<String> list,Map<String, Set<String>> map, String prefix) {
+        Set<String> set = map.get(prefix);
+        if (set != null) {
+            for (String str : set) {
+                list.add(str);
+                if (list.size() == str.length()) {
+                    // found a valid ans
+                    ans.add(new ArrayList<String>(list));
+                }
+                else {
+                    StringBuilder sb = new StringBuilder();
+                    for (String item : list) {
+                        sb.append(item.charAt(list.size()));
+                    }
+                    helper(ans, list, map, sb.toString());
+                }
+                list.remove(list.size() - 1);
+            }
+        }
+    }
+}
+~~~
+
+~~~
+电面，一个小时，阿三面试官，非常nice。
+Word Square:.鐣欏璁哄潧-涓€浜�-涓夊垎鍦�
+A B C D. visit 1point3acres.com for more.
+B N R T.1point3acres缃�
+C R M Y
+D T Y E
+
+Word Square的定义是，任取0<=k<n(长/宽)，第k行和第k列的字符组成的字符串是一样的，比如第一行ABCD和第一列ABCD，是一样的。-google 1point3acres
+
+除此之外，以下这种情况也是valid的。
+A B C D
+B N R T
+C R M
+D T
+
+先写一下假设你要写一个函数判断给定的输入是不是WS你会怎么写test case
+然后，给一个list of 字符串，给一个length，求长宽为length的所有valid的word square，以list of list of 字符串的形式返回。
+我是用backtracking/DFS的方法做的。
+~~~
+
+
 ## 139. Word Break (Medium)
 Given a non-empty string s and a dictionary wordDict containing a list of non-empty words, determine if s can be segmented into a space-separated sequence of one or more dictionary words. You may assume the dictionary does not contain duplicate words.
 

@@ -280,7 +280,7 @@ public class Solution {
 }
 ~~~
 
-## 395. Longest Substring with At Least K Repeating Characters
+## 395. Longest Substring with At Least K Repeating Characters (Not Sliding Window)
 Find the length of the longest substring T of a given string (consists of lowercase letters only) such that every character in T appears no less than k times.
 
 Example 1:
@@ -303,6 +303,38 @@ Output:
 5
 
 The longest substring is "ababb", as 'a' is repeated 2 times and 'b' is repeated 3 times.
+~~~
+
+#### Solution
+分治 <br>
+解题思想是如果s中所有字符都出现>=k次，那么直接返回str.length() <br>
+如果有字符出现小于k次，那么合法的string中必然不能包含这个字符，所以我们去掉这个字符recursive的去获取左边和右边string的合法解长度
+
+~~~
+public class Solution {
+    public int longestSubstring(String s, int k) {
+        if (s == null || s.length() == 0) return 0;
+        return helper(s, k, 0, s.length());
+    }
+
+    private int helper(String s, int k, int start, int end) {
+        int[] dict = new int[26];
+        for (int i = start; i < end; i++) {
+            dict[s.charAt(i) - 'a']++;
+        }
+
+        for (int i = start; i < end; i++) {
+            char ch = s.charAt(i);
+            if (dict[ch - 'a'] > 0 && dict[ch - 'a'] < k) {
+                int left = helper(s, k, start, i);
+                int right = helper(s, k, i + 1, end);
+                return Math.max(left, right);
+            }
+        }
+
+        return end - start;
+    }
+}
 ~~~
 
 ## 3. Longest Substring Without Repeating Characters
