@@ -1,4 +1,76 @@
-## 251. Flatten 2D Vector
+## 281. Zigzag Iterator (+)
+Given two 1d vectors, implement an iterator to return their elements alternately.
+
+For example, given two 1d vectors:
+~~~
+v1 = [1, 2]
+v2 = [3, 4, 5, 6]
+~~~
+By calling next repeatedly until hasNext returns false, the order of elements returned by next should be: [1, 3, 2, 4, 5, 6].
+
+Follow up: What if you are given k 1d vectors? How well can your code be extended to such cases?
+
+Clarification for the follow up question - Update (2015-09-18):
+The "Zigzag" order is not clearly defined and is ambiguous for k > 2 cases. If "Zigzag" does not look right to you, replace "Zigzag" with "Cyclic". For example, given the following input:
+~~~
+[1,2,3]
+[4,5,6,7]
+[8,9]
+~~~
+It should return [1,4,8,2,5,9,3,6,7].
+
+#### Solution
+
+~~~
+public class ZigzagIterator {
+
+    List<Iterator<Integer>> ilist;
+    int k;
+
+    public ZigzagIterator(List<Integer> v1, List<Integer> v2) {
+        ilist = new ArrayList<Iterator<Integer>>();
+        ilist.add(v1.iterator());
+        ilist.add(v2.iterator());
+        k = 0;
+    }
+
+    public int next() {
+        Iterator<Integer> iterator = ilist.get(k);
+        k = (k + 1) % 2;
+        return iterator.next();
+    }
+
+    public boolean hasNext() {
+        if (ilist.get(k).hasNext()) return true;
+
+        int count = 0;
+        while (!ilist.get(k).hasNext() && count < ilist.size()) {
+            k = (k + 1) % ilist.size();
+            count++;
+        }
+        return ilist.get(k).hasNext();
+    }
+}
+
+/**
+ * Your ZigzagIterator object will be instantiated and called as such:
+ * ZigzagIterator i = new ZigzagIterator(v1, v2);
+ * while (i.hasNext()) v[f()] = i.next();
+ */
+~~~
+
+**变形体**
+~~~
+很实用的资料。我在Google的面试就被要求实现Zigzag Iterator。只是条件比楼主给出的略为苛刻，面试官是这么问的：
+
+Given an iterator A of iterators B's , alternately output the contents in all the B's
+
+也就是说我现在有一群iterator B1, B2, ... Bk，分别是Collection C1, C2, ... , Ck的iterator. 但是不把这些iterator的引用直接给你，而是把这些iterator再放到一个Collection （比如记为B）中，然后给你的只是B的一个iterator BI。输出方式就是按楼主所说的zigzag形。
+
+我当时说可以用BI先把B遍历一遍，把所有的iterator B1, B2, ... , Bk先拷贝到一个能够随机访问的Collection中，然后用楼主上面给出的方法。但是面试官似乎不太认可这个答案，但是也没有明说到底哪里应该改进。我觉得他可能是想让我找一个不用预先遍历的方法，或者是甚至不需要用到额外O(k)内存的方法。但是我到最后也没想出来。
+~~~
+
+## 251. Flatten 2D Vector (+++)
 Implement an iterator to flatten a 2d vector.
 
 For example,

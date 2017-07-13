@@ -78,31 +78,10 @@ Use two for loop to scan the board.
 When encountering a element with value 0, set the first element of the corresponding column and row as 0.
 **Corner case** like [[1,1,1],[0,1,2]], need special handling of the board[0][0] element.
 
-
-## 41. First Missing Positive
-Given an unsorted integer array, find the first missing positive integer.
-
-For example,
-Given [1,2,0] return 3,
-and [3,4,-1,1] return 2.
-
-Your algorithm should run in O(n) time and uses constant space.
-
-#### Solution
-Since the problem requires to use constant space, so we mark whether an integer appears in the array itself.
-For example, "3 4 1 -1", we scan the array.
-1. current element 3 -> swap(nums, 1, 2) -> "1 4 3 -1"
-2. current element 1 -> 1 is in the right postision, no swap -> move forward
-3. current element 4 -> swap(nums, 1, 3) -> "1 -1 3 4"
-4. current element -1 -> -1 < 0 -> move forward
-5. current element 3 -> 3 is in the right postision, no swap -> move forward
-6. current element 4 -> 4 is in the right postision, no swap -> move forward
-Note corner case when there exist duplicate numbers, like [1,1].
-
 ## 220. Contains Duplicate III
 Given an array of integers, find out whether there are two distinct indices i and j in the array such that the absolute difference between nums[i] and nums[j] is at most t and the absolute difference between i and j is at most k.
 
 #### Solution
 1. Naiive Solution O(nk) will get time out.
 2. Top solution Using bucket from leetcode discussion O(n).
-3. O(nlogk) using TreeSet. 
+3. O(nlogk) using TreeSet.

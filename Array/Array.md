@@ -142,6 +142,16 @@ Your algorithm should run in O(n) time and uses constant space.
 3. 当前nums[i] - 1在范围内
 4. **正确index位置上的数字是错误的，处理重复数字**
 
+Since the problem requires to use constant space, so we mark whether an integer appears in the array itself.
+For example, "3 4 1 -1", we scan the array.
+1. current element 3 -> swap(nums, 1, 2) -> "1 4 3 -1"
+2. current element 1 -> 1 is in the right postision, no swap -> move forward
+3. current element 4 -> swap(nums, 1, 3) -> "1 -1 3 4"
+4. current element -1 -> -1 < 0 -> move forward
+5. current element 3 -> 3 is in the right postision, no swap -> move forward
+6. current element 4 -> 4 is in the right postision, no swap -> move forward
+Note corner case when there exist duplicate numbers, like [1,1].
+
 Attempt: 1
 ~~~
 public class Solution {
@@ -306,50 +316,6 @@ public class Solution {
         }
 
         return ans;
-    }
-}
-~~~
-
-## 621. Task Scheduler
-Given a char array representing tasks CPU need to do. It contains capital letters A to Z where different letters represent different tasks.Tasks could be done without original order. Each task could be done in one interval. For each interval, CPU could finish one task or just be idle.
-
-However, there is a non-negative cooling interval n that means between two same tasks, there must be at least n intervals that CPU are doing different tasks or just be idle.
-
-You need to return the least number of intervals the CPU will take to finish all the given tasks.
-
-Example 1:
-~~~
-Input: tasks = ['A','A','A','B','B','B'], n = 2
-Output: 8
-Explanation: A -> B -> idle -> A -> B -> idle -> A -> B.
-~~~
-
-Note:
-The number of tasks is in the range [1, 10000].
-The integer n is in the range [0, 100].
-
-#### Solution
-出现次数最高的char决定了最终长度
-~~~
-public class Solution {
-    public int leastInterval(char[] tasks, int n) {
-        if (tasks == null || tasks.length == 0) return 0;
-        if (n <= 0) return tasks.length;
-
-        // calculate dict freq
-        int[] dict = new int[26];
-        for (int i = 0; i < tasks.length; i++) {
-            dict[tasks[i] - 'A']++;
-        }
-
-        Arrays.sort(dict);
-        int i = 25;
-        // find the count of char that have the highest freq
-        while (i > 0 && dict[i] == dict[i - 1]) {
-            i--;
-        }
-        // if ((26 - i == n && i > 0 && dict[i - 1] != 0) || 26 - i > n) return tasks.length;
-        return Math.max(tasks.length, (n + 1) * (dict[25] - 1) + (26 - i));
     }
 }
 ~~~
