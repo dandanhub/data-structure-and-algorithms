@@ -1,4 +1,4 @@
-## 51. N-Queens
+## 51. N-Queens (+++)
 The n-queens puzzle is the problem of placing n queens on an n×n chessboard such that no two queens attack each other.
 
 Given an integer n, return all distinct solutions to the n-queens puzzle.
@@ -23,7 +23,8 @@ There exist two distinct solutions to the 4-queens puzzle:
 
 #### Solution
 Classic backtracking problem.
-Scan all possibilities and when a possibility is valid, add it to the final result.
+Scan all possibilities and when a possibility is valid, add it to the final result. <br>
+注意如何判定是否attack，不需要判断同一行了，特别注意对角线的判断
 
 ~~~
 public List<List<String>> solveNQueens(int n) {

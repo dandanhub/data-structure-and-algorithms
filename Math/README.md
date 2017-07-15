@@ -31,15 +31,17 @@ public class Math {
   // 50. Pow(x, n)
   // Solution 1: Recursive
   public double myPow(double x, int n) {
-        if (n == 0) {
-            return 1;
-        }
+        if (n == 0) return 1;
+        if (n == 1) return x;
+        if (n == -1) return 1 / x;
+
         int m = n / 2;
+        double res = myPow(x, m);
+        res *= res;
         if (n < 0) {
-            m = -m;
-            x =  1 / x;
+            x = 1 / x;
         }
-        return n % 2 == 0 ? myPow(x * x, m) : x * myPow(x * x, m);
+        return (n & 1) == 1 ? x * res : res;
   }
 
   // Solution 2: Iterative
