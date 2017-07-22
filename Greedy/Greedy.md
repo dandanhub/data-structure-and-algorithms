@@ -1,4 +1,4 @@
-## 621. Task Scheduler
+## 621. Task Scheduler (++)
 Given a char array representing tasks CPU need to do. It contains capital letters A to Z where different letters represent different tasks.Tasks could be done without original order. Each task could be done in one interval. For each interval, CPU could finish one task or just be idle.
 
 However, there is a non-negative cooling interval n that means between two same tasks, there must be at least n intervals that CPU are doing different tasks or just be idle.
@@ -42,7 +42,7 @@ public class Solution {
 }
 ~~~
 
-## 358. Rearrange String k Distance Apart
+## 358. Rearrange String k Distance Apart (+++)
 Given a non-empty string s and an integer k, rearrange the string such that the same characters are at least distance k from each other.
 
 All input strings are given in lowercase letters. If it is not possible to rearrange the string, return an empty string "".

@@ -206,22 +206,23 @@ public class Solution {
 
         for (int i = 0; i < len1; i++) {
             char ch = s1.charAt(i);
-            dict[ch - 'a']++;
+            dict[ch - 'a'] += 1;
         }
 
         for (int i = 0; i < len1; i++) {
             char ch = s2.charAt(i);
-            dict[ch - 'a']--;    
+            dict[ch - 'a'] -= 1;    
         }
         if (allZero(dict)) return true;
 
         int j = 0;
         for (int i = s1.length(); i < len2; i++) {
-            char chi = s2.charAt(i);
             char chj = s2.charAt(j);
-            dict[chj - 'a']++;
-            dict[chi - 'a']--;
+            dict[chj - 'a'] += 1;
             j++;
+
+            char chi = s2.charAt(i);
+            dict[chi - 'a'] -= 1;
             if (allZero(dict)) return true;
         }
 
@@ -276,6 +277,73 @@ public class Solution {
         }
 
         return len;
+    }
+}
+~~~
+
+## 424. Longest Repeating Character Replacement
+Given a string that consists of only uppercase English letters, you can replace any letter in the string with another letter at most k times. Find the length of a longest substring containing all repeating letters you can get after performing the above operations.
+
+Note:
+Both the string's length and k will not exceed 104.
+
+Example 1:
+~~~
+Input:
+s = "ABAB", k = 2
+
+Output:
+4
+
+Explanation:
+Replace the two 'A's with two 'B's or vice versa.
+~~~
+
+Example 2:
+~~~
+Input:
+s = "AABABBA", k = 1
+
+Output:
+4
+
+Explanation:
+Replace the one 'A' in the middle with 'B' and form "AABBBBA".
+The substring "BBBB" has the longest repeating letters, which is 4.
+~~~
+
+#### Solution
+类似于 At most K distinct character, 但是要维护一个maxCharCount.
+
+~~~
+public class Solution {
+    public int characterReplacement(String s, int k) {
+        if (s == null || s.length() == 0) return 0;
+
+        int[] dict = new int[26];
+        int i = 0, j = 0;
+        int res = 0, maxCharCount = 0;
+
+        while (j < s.length()) {        
+            dict[s.charAt(j) - 'A']++;
+            if (maxCharCount < dict[s.charAt(j) - 'A']) {
+                maxCharCount = dict[s.charAt(j) - 'A'];
+            }
+
+            // move pointer i
+            while (j - i + 1 - maxCharCount > k) {
+                dict[s.charAt(i) - 'A']--;
+                i++;
+                for (int count : dict) {
+                    maxCharCount = Math.max(maxCharCount, count);
+                }
+            }
+
+            res = Math.max(res, j - i + 1);
+            j++;
+        }
+
+        return res;
     }
 }
 ~~~

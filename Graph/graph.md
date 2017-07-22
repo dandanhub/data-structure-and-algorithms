@@ -105,6 +105,7 @@ public class Solution {
 Given a list of airline tickets represented by pairs of departure and arrival airports [from, to], reconstruct the itinerary in order. All of the tickets belong to a man who departs from JFK. Thus, the itinerary must begin with JFK.
 
 Note:
+~~~
 If there are multiple valid itineraries, you should return the itinerary that has the smallest lexical order when read as a single string. For example, the itinerary ["JFK", "LGA"] has a smaller lexical order than ["JFK", "LGB"].
 All airports are represented by three capital letters (IATA code).
 You may assume all tickets form at least one valid itinerary.
@@ -115,36 +116,38 @@ Example 2:
 tickets = [["JFK","SFO"],["JFK","ATL"],["SFO","ATL"],["ATL","JFK"],["ATL","SFO"]]
 Return ["JFK","ATL","JFK","SFO","ATL","SFO"].
 Another possible reconstruction is ["JFK","SFO","ATL","JFK","ATL","SFO"]. But it is larger in lexical order.
+~~~
 
 #### Solution
 ###### 欧拉回路
 1. find whether a given graph has a Eulerian Path or not in O(V+E) time.
-- Eulerian Cycle in Undirected Graph <br>
-只考虑有度的vertices, 所有顶点even degree (connected graphs with all vertices of even degree have an Eulerian circuit)
-- Eulerian Path in Undirected Graph <br>
-只考虑有度的vertices, 0/2个顶点的度为odd, 其他所有顶点度为even (For the existence of Eulerian trails it is necessary that zero or two vertices have an odd degree)
-- Pseudo-code <br>
-~~~
-dfs check if graph is connected (consider all verticals with non-zero degree)
-count vertices with odd degree
-if count == 0, Eulerian Cycle
-else if count == 2, Eulerian Path
-else no Eulerian Cycle/path
-~~~
-- Eulerian Cycle in Directed Graph <br>
-所有顶点的出度入度相等 (1) All vertices with nonzero degree belong to a single strongly connected component. (2) In degree and out degree of every vertex is same
-- Eulerian Path in Directed Graph <br>
-0/2个顶点的出入度差1
+  - Eulerian Cycle in Undirected Graph <br>
+  只考虑有度的vertices, 所有顶点even degree (connected graphs with all vertices of even degree have an Eulerian circuit)
+  - Eulerian Path in Undirected Graph <br>
+  只考虑有度的vertices, 0/2个顶点的度为odd, 其他所有顶点度为even (For the existence of Eulerian trails it is necessary that zero or two vertices have an odd degree)
+  - Pseudo-code <br>
+  ~~~
+  dfs check if graph is connected (consider all verticals with non-zero degree)
+  count vertices with odd degree
+  if count == 0, Eulerian Cycle
+  else if count == 2, Eulerian Path
+  else no Eulerian Cycle/path
+  ~~~
+  - Eulerian Cycle in Directed Graph <br>
+  所有顶点的出度入度相等 (1) All vertices with nonzero degree belong to a single strongly connected component. (2) In degree and out degree of every vertex is same
+  - Eulerian Path in Directed Graph <br>
+  0/2个顶点的出入度差1
 
 2. Fleury’s Algorithm for printing Eulerian Path or Circuit O(E*E)
-- 如果有度数为odd的vertices (0 or 2个), 那么从度数为odd的顶点开始
-- 每次走一个边，选取edge的时候要尽量先选取non-bridge edge
-- 当遍历完所有边的时候停止
+  - 如果有度数为odd的vertices (0 or 2个), 那么从度数为odd的顶点开始
+  - 每次走一个边，选取edge的时候要尽量先选取non-bridge edge
+  - 当遍历完所有边的时候停止
 
-Time complexity O(E*E), 因为每次遍历到一个顶点（边）要确认每条边是不是bridge edge (DFS判断).
+  Time complexity O(E*E), 因为每次遍历到一个顶点（边）要确认每条边是不是bridge edge (DFS判断).
 
 3. Hierholzer’s Algorithm for directed graph O(E)
-Thus the idea is to keep following unused edges and removing them until we get stuck. Once we get stuck, we back-track to the nearest vertex in our current path that has unused edges, and we repeat the process until all the edges have been used. We can use another container to maintain the final path. Refer to this [discussion](http://wattlebird.github.io/2015/06/28/%E6%AC%A7%E6%8B%89%E8%B7%AF/).
+  - Thus the idea is to keep following unused edges and removing them until we get stuck. Once we get stuck, we back-track to the nearest vertex in our current path that has unused edges, and we repeat the process until all the edges have been used. We can use another container to maintain the final path. Refer to this [discussion](http://wattlebird.github.io/2015/06/28/%E6%AC%A7%E6%8B%89%E8%B7%AF/).
+  - 前提是存在欧拉路径（回路）
 
 
 这题是Hierholzer’s在有向图中在欧拉回路的应用 <br>

@@ -293,3 +293,99 @@ follow up 1 是 可不可以不用 stack 。 我说可以用 两个变量 ： �
 链接: https://instant.1point3acres.com/thread/203992
 来源: 一亩三分地
 ~~~
+
+
+## 456. 132 Pattern
+Given a sequence of n integers a1, a2, ..., an, a 132 pattern is a subsequence ai, aj, ak such that i < j < k and ai < ak < aj. Design an algorithm that takes a list of n numbers as input and checks whether there is a 132 pattern in the list.
+
+Note: n will be less than 15,000.
+
+Example 1:
+~~~
+Input: [1, 2, 3, 4]
+
+Output: False
+
+Explanation: There is no 132 pattern in the sequence.
+~~~
+Example 2:
+~~~
+Input: [3, 1, 4, 2]
+
+Output: True
+
+Explanation: There is a 132 pattern in the sequence: [1, 4, 2].
+~~~
+Example 3:
+~~~
+Input: [-1, 3, 2, 0]
+
+Output: True
+
+Explanation: There are three 132 patterns in the sequence: [-1, 3, 2], [-1, 3, 0] and [-1, 2, 0].
+~~~
+
+#### Solution
+1. O(n^2) method : fix j, find min from range(0, j - 1), check whether in range(j + 1, nums.length - 1) has a number less than nums[j] and greater than min.
+2. O(n) method : using stack.  
+
+Method 1 O(n^2) <br>
+Attempt: 1
+~~~
+public class Solution {
+    public boolean find132pattern(int[] nums) {
+        if (nums == null || nums.length < 3) return false;
+
+        // fix j
+        for (int j = 1; j < nums.length - 1; j++) {
+            // find min num in range from 0 to j - 1, and make it as i
+            int min = nums[0];
+            // int index = 0; // no need to track index
+            for (int i = 1; i < j; i++) {
+                if (nums[i] < min) {
+                    min = nums[i];
+                    // index = i;
+                }
+            }
+
+            // found a valid i
+            if (min < nums[j]) {
+                // find k in range from j + 1 to nums.length - 1
+                for (int k = j + 1; k < nums.length; k++) {
+                    if (nums[k] < nums[j] && nums[k] > min) return true;
+                }
+            }
+        }
+
+        return false;
+    }
+}
+~~~
+
+Stack O(n)
+~~~
+public class Solution {
+    public boolean find132pattern(int[] nums) {
+        Stack<Integer> stack = new Stack<Integer>();
+        int min = Integer.MAX_VALUE;
+        for (int num : nums) {
+            if (num < min) {
+                min = num;
+            }
+            else {
+                while (!stack.empty()) {
+                    if (num <= stack.peek()) break;
+                    stack.pop();
+                    if (num < stack.pop()) return true; p
+                    // 注意这里细节，如果当前数字小于stack.pop(),则直接返回结果
+                    // 如果当前数字大于stack.pop(), 那么我们也不需要再maintain被pop()出来的数字
+                    // 就可以直接stack.push(num); stack.push(min);
+                }
+                stack.push(num);
+                stack.push(min);
+            }
+        }
+        return false;
+    }
+}
+~~~

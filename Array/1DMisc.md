@@ -41,7 +41,87 @@ public class Solution {
 }
 ~~~
 
-
 ~~~
 first is summary missing range problem. ［0 1 2 45 99］ output “3-44，46-98”
+~~~
+
+## 370. Range Addition
+Assume you have an array of length n initialized with all 0's and are given k update operations.
+
+Each operation is represented as a triplet: [startIndex, endIndex, inc] which increments each element of subarray A[startIndex ... endIndex] (startIndex and endIndex inclusive) with inc.
+
+Return the modified array after all k operations were executed.
+
+Example:
+~~~
+Given:
+
+    length = 5,
+    updates = [
+        [1,  3,  2],
+        [2,  4,  3],
+        [0,  2, -2]
+    ]
+
+Output:
+
+    [-2, 0, 3, 5, 3]
+~~~
+
+Explanation:
+~~~
+Initial state:
+[ 0, 0, 0, 0, 0 ]
+
+After applying operation [1, 3, 2]:
+[ 0, 2, 2, 2, 0 ]
+
+After applying operation [2, 4, 3]:
+[ 0, 2, 5, 5, 3 ]
+
+After applying operation [0, 2, -2]:
+[-2, 0, 3, 5, 3 ]
+~~~
+
+#### Solution
+1. Method 1: O(nk)
+2. Method 2: O(n + k) Prefix Sum
+
+Prefix Sum:
+~~~
+Initial state:
+[ 0, 0, 0, 0, 0 ]
+
+After applying operation [1, 3, 2]:
+[ 0, 2, 0, 0, -2 ]
+
+After applying operation [2, 4, 3]:
+[ 0, 2, 3, 0, -2 ]
+
+After applying operation [0, 2, -2]:
+[ -2, 2, 3, 2, -2 ]
+
+Sum Up:
+[ -2, 0, 3, 5, 3 ]
+~~~
+
+~~~
+public class Solution {
+    public int[] getModifiedArray(int length, int[][] updates) {
+        if (length < 1) return new int[0];
+        if (updates == null || updates.length == 0 || updates[0].length != 3) return new int[length];
+
+        int[] nums = new int[length];
+        for (int i = 0; i < updates.length; i++) {
+            int l = updates[i][0], r = updates[i][1], s = updates[i][2];
+            if (l > r) continue;
+            if (l >= 0) nums[l] += s;
+            if (r + 1 < nums.length) nums[r + 1] -= s;
+        }
+        for (int i = 1; i < nums.length; i++) {
+            nums[i] += nums[i - 1];
+        }
+        return nums;
+    }
+}
 ~~~

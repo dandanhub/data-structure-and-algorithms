@@ -28,45 +28,51 @@ Return:
 #### Solution
 Use two boolean array to mark whether pacific and atlantic water can flow into a point matrix[i][j].
 Use DFS to mark matrix just like water flow.
+这题新颖的地方是
+1. 保存两个visited数字
+2. 每次dfs开始的点
 
 ~~~
-// 417. Pacific Atlantic Water Flow
-public List<int[]> pacificAtlantic(int[][] matrix) {
-    List<int[]> ans = new ArrayList<int[]>();
-    if (matrix == null || matrix.length == 0 || matrix[0].length == 0) return ans;
+public class Solution {
+    public List<int[]> pacificAtlantic(int[][] matrix) {
+        List<int[]> ans = new ArrayList<int[]>();
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) return ans;
+        int m = matrix.length, n = matrix[0].length;
+        boolean[][] pacific = new boolean[m][n];
+        boolean[][] atlantic = new boolean[m][n];
 
-    int r = matrix.length;
-    int c = matrix[0].length;
-    boolean[][] pacific = new boolean[r][c];
-    boolean[][] atlantic = new boolean[r][c];
+        for (int i = 0; i < m; i++) {
+            dfs(matrix, pacific, i, 0); // pacific starts from left
+            dfs(matrix, atlantic, i, n - 1); // atlantic starts from right
+        }
 
-    for (int i = 0; i < r; i++) {
-        dfs(matrix, pacific, i, 0, Integer.MIN_VALUE);
-        dfs(matrix, atlantic, i, c - 1, Integer.MIN_VALUE);
-    }
+        for (int j = 0; j < n; j++) {
+            dfs(matrix, pacific, 0, j); // pacific starts from up
+            dfs(matrix, atlantic, m - 1, j); // atlantic starts from bottom
+        }
 
-    for (int j = 0; j < c; j++) {
-        dfs(matrix, pacific, 0, j, Integer.MIN_VALUE);
-        dfs(matrix, atlantic, r - 1, j, Integer.MIN_VALUE);
-    }
-
-    for (int i = 0; i < r; i++) {
-        for (int j = 0; j < c; j++) {
-            if (pacific[i][j] && atlantic[i][j]) {
-                int[] point = {i, j};
-                ans.add(point);
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (pacific[i][j] && atlantic[i][j]) {
+                    int[] point = {i, j};
+                    ans.add(point);
+                }
             }
         }
+        return ans;
     }
-    return ans;
-}
 
-int[][] directs = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
-private void dfs(int[][] matrix, boolean[][] visited, int i, int j, int height) {
-    if (i < 0 || i >= matrix.length || j < 0 || j >= matrix[0].length || visited[i][j] || matrix[i][j] < height) return;
-    visited[i][j] = true;
-    for (int[] d : directs) {
-        dfs(matrix, visited, i + d[0], j + d[1], matrix[i][j]);
+    private void dfs(int[][] matrix, boolean[][] visited, int i, int j) {
+        int m = matrix.length, n = matrix[0].length;
+        visited[i][j] = true;
+        int[][] dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        for (int[] dir : dirs) {
+            int x = i + dir[0];
+            int y = j + dir[1];
+            if (x >= 0 && y >= 0 && x < m && y < n && matrix[x][y] >= matrix[i][j] && !visited[x][y]) {
+                dfs(matrix, visited, x, y);
+            }
+        }
     }
 }
 ~~~
