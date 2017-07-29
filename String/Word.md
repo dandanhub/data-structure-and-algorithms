@@ -479,6 +479,24 @@ You may assume that all inputs are consist of lowercase letters a-z.
 1. The key is to use Tries (How to implement Tires?)
 2. Then DFS + backtrack search.
 
+几个需要注意的点
+1. 如何避免重复
+2. 在BuildTries的时候，Tries移动
+~~~
+for (int j = 0; j < s.length(); j++) {
+                char ch = s.charAt(j);
+                if (curr.children[ch - 'a'] == null) {
+                    curr.children[ch - 'a'] = new Tries();
+                }
+                // BUG
+                // else {
+                //     curr = curr.children[ch - 'a'];
+                // }
+                curr = curr.children[ch - 'a'];
+            }
+            curr.word = s;
+~~~
+
 **Note**
 Always consider the test case
 ~~~

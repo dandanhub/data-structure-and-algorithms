@@ -96,3 +96,97 @@ public class Solution {
     }
 }
 ~~~
+
+## 65. Valid Number
+Validate if a given string is numeric.
+
+Some examples:
+"0" => true
+" 0.1 " => true
+"abc" => false
+"1 a" => false
+"2e10" => true
+Note: It is intended for the problem statement to be ambiguous. You should gather all requirements up front before implementing one.
+
+#### Solution
+Brute Force <br>
+测试用例
+~~~
+"3"
+"03"
+"3 0 "
+".03"
+"-.003"
+"+.003"
+"+.00.3"
+"+.00+3"
+".00-3"
+"0"
+" 0.1 "
+"abc"
+"1 a"
+"2e10"
+"e210"
+".e210"
+"2.e210"
+"2.0e210"
+"2.0e21e0"
+"."
+"+."
+"+2e"
+"+2e."
+"+2e.3"
+"+2e4.3"
+"--"
+"-."
+"e."
+".+-e"
+"30."
+" "
+"    "
+" +005047e+6"
+" +005047e+6e2"
+"459277e38+"
+~~~
+
+Attempt: 5
+~~~
+public class Solution {
+    public boolean isNumber(String s) {
+        if (s == null) return false;
+        s = s.trim();
+        if (s.length() == 0) return false;
+
+        boolean digit = false; // seen digit or not
+        boolean dot = false;   // seen dot '.' or not
+        boolean sc = false;     // seen 'e' or not, scientific num
+        boolean exp = false;    // seen exp part for scientific num or not
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            if (Character.isDigit(ch)) {
+                digit = true;
+                if (sc) exp = true;
+            }
+            else if (ch == '.' && !dot && !sc) {
+                dot = true;
+            }
+            else if (ch == 'e' && digit && !sc) {
+                sc = true;
+            }
+            else if ((ch == '-' || ch == '+') && (i == 0 || (sc && s.charAt(i - 1) == 'e'))) {
+                continue;
+            }
+            else return false;
+        }
+
+        if (dot && !digit) {
+            return false;
+        }
+        if (sc && !exp) {
+            return false;
+        }
+
+        return true;
+    }
+}
+~~~

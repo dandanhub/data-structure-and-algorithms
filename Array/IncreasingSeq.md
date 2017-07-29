@@ -306,3 +306,36 @@ public class Solution {
     }
 }
 ~~~
+
+## 329. Longest Increasing Path in a Matrix
+
+Given an integer matrix, find the length of the longest increasing path.
+
+From each cell, you can either move to four directions: left, right, up or down. You may NOT move diagonally or move outside of the boundary (i.e. wrap-around is not allowed).
+
+Example 1:
+~~~
+nums = [
+  [9,9,4],
+  [6,6,8],
+  [2,1,1]
+]
+~~~
+Return 4
+The longest increasing path is [1, 2, 6, 9].
+
+Example 2:
+~~~
+nums = [
+  [3,4,5],
+  [3,2,6],
+  [2,2,1]
+]
+~~~
+Return 4
+The longest increasing path is [3, 4, 5, 6]. Moving diagonally is not allowed.
+
+#### Solution
+慢版本：从每个点开始，向合法的上下左右走，dist[i][j]记录从出发点到matrix[j][j]的距离。初始化是dist[i][j]为1，一旦找到出现距离大于dist[i][j]的情况，那么更新dist[i][j]。由于这样造成了很多重复，performance不是很好。
+
+改良版：从每个点出发，记录从这个点作为起始点，能reach的最大距离，如果在DFS的过程中到达了访问过的点就不再重复访问，这样避免了重复。
