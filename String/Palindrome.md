@@ -616,3 +616,60 @@ public class Solution {
     }
 }
 ~~~
+
+## 479. Largest Palindrome Product
+Find the largest palindrome made from the product of two n-digit numbers.
+
+Since the result could be very large, you should return the largest palindrome mod 1337.
+
+Example:
+
+Input: 2
+
+Output: 987
+
+Explanation: 99 x 91 = 9009, 9009 % 1337 = 987
+
+Note:
+
+The range of n is [1,8].
+
+#### Solution
+1. 找出能组成的最大product, 用left half生成palindrome.
+2. 判断生成的palindrome是否可以被n-digits分解
+  - 这里从最大的数字开始检测，为了加快速度一旦发现product > i * i就break
+3. 如果不能被分解，那么left--，然后repeat去检测生成的palindrome是不是可以被分解
+
+~~~
+public class Solution {
+    public int largestPalindrome(int n) {
+        if (n <= 0) return 0;
+        if (n == 1) return 9;
+
+        long upper = (long) Math.pow(10, n) - 1;
+        long lower = upper / 10;
+        long maxProduct = upper * upper;
+        long left = maxProduct / (long) Math.pow(10, n);
+
+        while (left > lower) {
+            long maxPal = generatePalindrome(left);
+            for (long i = upper; i > lower; i--) {
+                if (maxPal > i * i) break;
+                if (maxPal % i == 0) {
+                    return (int)(maxPal % 1337);
+                }
+            }
+            left--;
+        }
+
+        return 0;        
+    }
+
+    public long generatePalindrome(long left) {
+        StringBuilder pal = new StringBuilder();
+        StringBuilder sb = new StringBuilder(String.valueOf(left));
+        pal.append(left).append(sb.reverse());
+        return Long.valueOf(pal.toString());
+    }
+}
+~~~

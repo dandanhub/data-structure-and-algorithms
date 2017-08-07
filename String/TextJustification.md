@@ -144,3 +144,14 @@ public List<String> fullJustify(String[] words, int maxWidth) {
         return list;
     }
 ~~~
+
+
+## Text Justification
+
+~~~
+Google， Linkedin，Airbnb今年都被问过。。。。
+L和A的follow up是可以加单词的Hypen，把一个词可以分行写。
+
+Text Justification DP
+https://youtu.be/ENyox7kNKeY?t=17m8s
+~~~

@@ -144,7 +144,7 @@ How to check this? <br>
 We can check whether there is a path from root to any node along the path has a prefix path sum equals to prefixSum[current node] - target.
 
 Method 1: <br>
-Time complexity: O(h^2) h is the height of the tree <br>
+Time complexity: O(n^2) h is the height of the tree <br>
 Space complexity: O(n) due to recursion <br>
 Attempt: 2 (typo bug)
 ~~~

@@ -184,6 +184,42 @@ public class Solution {
 }
 ~~~
 
+Version 2
+~~~
+public class Solution {
+    public int firstMissingPositive(int[] nums) {
+        if (nums == null || nums.length == 0) return 1;
+
+        // scan the array
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] <= 0) {
+                continue;
+            }    
+            else {
+                int index = nums[i] - 1;
+                if (index < nums.length && nums[index] != nums[i]) {
+                    swap(nums, index, i);
+                    i--;
+                }
+            }
+        }
+
+        // check the array to find 1st missing pos
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != i + 1) return i + 1;
+        }
+
+        return nums.length + 1;
+    }
+
+    private void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+}
+~~~
+
 ## 321. Create Maximum Number
 Given two arrays of length m and n with digits 0-9 representing two numbers. Create the maximum number of length k <= m + n from digits of the two. The relative order of the digits from the same array must be preserved. Return an array of the k digits. You should try to optimize your time and space complexity.
 

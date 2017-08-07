@@ -20,33 +20,25 @@ One pass with swap.
 
 **容易出错的点：**
 1. 在swap之后，由于不知道left和right的数字是不是0,2，所以不能直接移动left和right指针，要做判断（或者提前处理好left和right指针）
-2. 遇到1的时候，移动遍历的指针
 
 ~~~
 public class Solution {
     public void sortColors(int[] nums) {
-        if (nums == null || nums.length <= 1) return;
-        int left = 0;
-        int right = nums.length - 1;
-        int i = 0;
-        while (i <= right) {
-            if (nums[i] == 0) {
-                if (i == left) i++;
-                else swap(nums, i, left); // nums[left] is 0 now
-                left++;
+        if (nums == null || nums.length == 0) return;
+
+        int l = 0;
+        int r = nums.length - 1;
+        for (int i = 0; i <= r; i++) {
+            if (nums[i] == 0 && i != l) {
+                swap(nums, i--, l++);
             }
-            else if (nums[i] == 2) {
-                if (i == right) i++;
-                else swap(nums, i, right); // nums[right] is 2 now
-                right--;
-            }
-            else {
-                i++;
+            else if (nums[i] == 2 && i != r) {
+                swap(nums, i--, r--);
             }
         }
     }
 
-    private void swap(int[] nums, int i, int j) { // typo compile error
+    private void swap(int[] nums, int i, int j) {
         int temp = nums[i];
         nums[i] = nums[j];
         nums[j] = temp;

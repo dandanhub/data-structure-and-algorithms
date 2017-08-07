@@ -30,12 +30,31 @@ Returns the index of the first occurrence of needle in haystack, or -1 if needle
 m - the length of haystack <br>
 n - the length of needle <br>
 time complexity O(mn) <br>
+
+~~~
+public class Solution {
+    public int strStr(String haystack, String needle) {
+        if (haystack == null || needle == null) return -1;
+        if (needle.length() == 0) return 0;
+
+        for (int i = 0; i <= haystack.length() - needle.length(); i++) {
+            for (int j = 0; j <= needle.length(); j++) {
+                if (j == needle.length()) return i;
+                if (haystack.charAt(i + j) != needle.charAt(j)) break;
+            }
+        }
+        return -1;
+    }
+}
+~~~
+
 2. Apply KMP.
 time complexity O(m + n) <br>
 "Since the two portions of the algorithm have, respectively, complexities of O(k) and O(n), the complexity of the overall algorithm is O(n + k). So the total cost of a KMP search is linear in the number of characters of string and pattern." <br>
 
-**注意是建立needle的KMP表，然后不匹配位移的时候也是位移needle的指针**
-
+1. **注意是建立needle的KMP表**
+2. **然后不匹配位移的时候也是位移needle的指针**
+3. **不匹配的时候看的是最后一个匹配位置的KMP值**
 ~~~
 public class Solution {
     /*

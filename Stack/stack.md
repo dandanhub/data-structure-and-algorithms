@@ -1,3 +1,165 @@
+## 439. Ternary Expression Parser
+Given a string representing arbitrarily nested ternary expressions, calculate the result of the expression. You can always assume that the given expression is valid and only consists of digits 0-9, ?, :, T and F (T and Frepresent True and False respectively).
+
+Note:
+
+The length of the given string is ≤ 10000.
+Each number will contain only one digit.
+The conditional expressions group right-to-left (as usual in most languages).
+The condition will always be either T or F. That is, the condition will never be a digit.
+The result of the expression will always evaluate to either a digit 0-9, T or F.
+
+
+Example 1:
+~~~
+Input: "T?2:3"
+Output: "2"
+Explanation: If true, then result is 2; otherwise result is 3.
+~~~
+
+Example 2:
+~~~
+Input: "F?1:T?4:5"
+Output: "4"
+Explanation: The conditional expressions group right-to-left. Using parenthesis, it is read/evaluated as:
+             "(F ? 1 : (T ? 4 : 5))"                   "(F ? 1 : (T ? 4 : 5))"
+          -> "(F ? 1 : 4)"                 or       -> "(T ? 4 : 5)"
+          -> "4"                                    -> "4"
+ ~~~
+
+Example 3:
+~~~
+Input: "T?T?F:5:3"
+Output: "F"
+Explanation: The conditional expressions group right-to-left. Using parenthesis, it is read/evaluated as:
+             "(T ? (T ? F : 5) : 3)"                   "(T ? (T ? F : 5) : 3)"
+          -> "(T ? F : 3)"                 or       -> "(T ? F : 5)"
+          -> "F"                                    -> "F"
+~~~
+
+#### Solution
+用Stack, 从后往前遍历expression，遇到?判断T|F, 然后解析栈内已有的元素。
+~~~
+public String parseTernary(String expression) {
+    if (expression == null || expression.length() == 0) return "";
+    Stack<Character> stack = new Stack<Character>();
+
+    // from tail to head
+    for (int i = expression.length() - 1; i >= 0; i--) {
+      char ch = expression.charAt(i);
+      if (!stack.isEmpty() && stack.peek() == '?') {
+        stack.pop(); // pop ?
+        char left = stack.pop(); // left
+        stack.pop();
+        char right = stack.pop(); // right
+        if (ch == 'T') stack.push(left);
+        else stack.push(right);
+      }
+      else {
+        stack.push(ch);
+      }
+    }
+
+    return String.valueOf(stack.pop());
+  }
+~~~
+
+## Ternary Expression to Binary Tree
+I came across this problem that has Ternary expression (a?b:c) and needs the ternary expression to be converted into a Binary tree structure.
+~~~
+     a?b:c
+
+       a
+      / \
+     b   c
+~~~
+
+~~~
+  a?b?c:d:e
+
+     a
+    / \
+   b   e
+  / \
+ c   d
+~~~
+
+~~~
+"a?b?c?d:k:l?m:h?a:s:i"
+~~~
+
+#### Solution
+1. 第一个字符用来创建root
+2. 利用栈来保存结点
+3. 每次两个读取字符，如果遇到'?', 则用下一个字符来创建新的节点，并设置为栈顶元素的left child
+4. 如果遇到':', 则用下一个字符来创建新的节点，并找到栈内第一个没有right child的节点，把新创建的节点设置为其right child.
+
+~~~
+import java.io.*;
+import java.util.*;
+
+/*
+ * To execute Java, please define "static void main" on a class
+ * named Solution.
+ *
+ * If you need more classes, simply define them inline.
+ */
+
+class Solution {
+  static class TreeNode {
+    char data;
+    TreeNode left;
+    TreeNode right;
+
+    public TreeNode(char ch) {
+      data = ch;
+    }
+  }
+
+  public static void main(String[] args) {
+    printTree(parseTernary("a?b?c:d:e"));
+    System.out.println();
+    printTree(parseTernary("a?b:c"));
+    System.out.println();
+    printTree(parseTernary("a?b?c?d:k:l?m:h?a:s:i"));
+    System.out.println();
+  }
+
+  public static void printTree(TreeNode root)
+  {
+      if (root == null) return;
+
+      System.out.print(root.data + " ");
+      printTree(root.left);
+      printTree(root.right);
+  }
+
+  public static TreeNode parseTernary(String s) {
+    if (s == null || s.length() == 0) return null;
+
+    TreeNode root = new TreeNode(s.charAt(0));
+    Stack<TreeNode> stack = new Stack<TreeNode>();
+    stack.push(root);
+    for (int i = 1; i < s.length(); i += 2) {
+      TreeNode node = new TreeNode(s.charAt(i + 1));
+      if (s.charAt(i) == '?') {
+        stack.peek().left = node;
+      }
+      else if (s.charAt(i) == ':') {
+        stack.pop();
+        while (stack.peek().right != null) {
+          stack.pop();
+        }
+        stack.peek().right = node;
+      }
+      stack.push(node);
+    }
+    return root;
+  }
+}
+
+~~~
+
 ## 402. Remove K Digits
 Given a non-negative integer num represented as a string, remove k digits from the number so that the new number is the smallest possible.
 

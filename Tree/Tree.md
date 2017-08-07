@@ -204,3 +204,79 @@ public class Solution {
     }
 }
 ~~~
+
+## 222. Count Complete Tree Nodes
+Given a complete binary tree, count the number of nodes.
+
+Definition of a complete binary tree from Wikipedia:
+In a complete binary tree every level, except possibly the last, is completely filled, and all nodes in the last level are as far left as possible. It can have between 1 and 2h nodes inclusive at the last level h.
+
+#### Solution
+Method 1: Recursion, O(lgn^2)
+~~~
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+public class Solution {
+    public int countNodes(TreeNode root) {
+        if (root == null) return 0;
+        int left = height(root.left);
+        int right = height(root.right);
+        if (left == right) {
+            return (1 << left) + countNodes(root.right);
+        }
+        else {
+            return (1 << right) + countNodes(root.left);
+        }
+    }
+
+    private int height(TreeNode root) {
+        if (root == null) return 0;
+        return 1 + height(root.left);
+    }
+}
+~~~
+
+Method 2: Iterative O(lgn^2)
+~~~
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+public class Solution {
+    public int countNodes(TreeNode root) {
+        if (root == null) return 0;
+        TreeNode curr = root;
+        int res = 0;
+        while (curr != null) {
+            int left = height(curr.left);
+            int right = height(curr.right);
+            if (left == right) {
+                res += (1 << left);
+                curr = curr.right;
+            }
+            else {
+                res += (1 << right);
+                curr = curr.left;
+            }
+        }
+        return res;
+    }
+
+    private int height(TreeNode root) {
+        if (root == null) return 0;
+        return 1 + height(root.left);
+    }
+}
+~~~

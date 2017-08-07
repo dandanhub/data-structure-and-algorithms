@@ -792,6 +792,56 @@ You may assume beginWord and endWord are non-empty and are not the same.
 
 ---
 
+## 290. Word Pattern
+Given a pattern and a string str, find if str follows the same pattern.
+
+Here follow means a full match, such that there is a bijection between a letter in pattern and a non-empty word in str.
+
+Examples:
+pattern = "abba", str = "dog cat cat dog" should return true.
+pattern = "abba", str = "dog cat cat fish" should return false.
+pattern = "aaaa", str = "dog cat cat dog" should return false.
+pattern = "abba", str = "dog dog dog dog" should return false.
+Notes:
+You may assume pattern contains only lowercase letters, and str contains lowercase letters separated by a single space.
+
+#### Solution
+Tricky one, 要建立char和String之间一一对应的关系
+
+Method 1: 用两个map
+~~~
+public class Solution {
+    public boolean wordPattern(String pattern, String str) {
+        if (pattern == null) return str == null;
+        if (str == null) return pattern == null;
+
+        Map<Character, String> map = new HashMap<Character, String>();
+        Map<String, Character> rmap = new HashMap<String, Character>();
+        String[] tokens = str.split("\\s");
+        if (tokens.length != pattern.length()) return false;
+        for (int i = 0; i < pattern.length(); i++) {
+            char ch = pattern.charAt(i);
+            if (map.containsKey(ch)) {
+                if (!map.get(ch).equals(tokens[i])) return false;
+            }
+            else if (rmap.containsKey(tokens[i])) {
+                if (ch != rmap.get(tokens[i])) return false;
+            }
+            else {
+                map.put(ch, tokens[i]);
+                rmap.put(tokens[i], ch);
+            }
+        }
+
+        return true;
+    }
+}
+~~~
+
+Method 2: 用一个map，但是使用map.containsValue()方法，map.containsValue()需要O(n)的时间
+
+---
+
 ## 151. Reverse Words in a String
 Given an input string, reverse the string word by word.
 

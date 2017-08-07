@@ -1,3 +1,90 @@
+## 78. Subsets
+Given a set of distinct integers, nums, return all possible subsets.
+
+Note: The solution set must not contain duplicate subsets.
+
+For example,
+If nums = [1,2,3], a solution is:
+~~~
+[
+  [3],
+  [1],
+  [2],
+  [1,2,3],
+  [1,3],
+  [2,3],
+  [1,2],
+  []
+]
+~~~
+
+#### Solution
+
+~~~
+public class Solution {
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> ans = new ArrayList<List<Integer>>();
+        if (nums == null || nums.length == 0) return ans;
+        helper(ans, new ArrayList<Integer>(), 0, nums);
+        return ans;
+    }
+
+    private void helper(List<List<Integer>> ans, List<Integer> list, int start, int[] nums) {
+        ans.add(new ArrayList<Integer>(list));
+
+        for (int i = start; i < nums.length; i++) {
+            list.add(nums[i]);
+            helper(ans, list, i + 1, nums);
+            list.remove(list.size() - 1);
+        }
+    }
+}
+~~~
+
+## 90. Subsets II
+Given a collection of integers that might contain duplicates, nums, return all possible subsets.
+
+Note: The solution set must not contain duplicate subsets.
+
+For example,
+If nums = [1,2,2], a solution is:
+~~~
+[
+  [2],
+  [1],
+  [1,2,2],
+  [2,2],
+  [1,2],
+  []
+]
+~~~
+
+#### Solution
+1. 先排序
+2. 对于有序数组处理可能的重复的情况
+
+~~~
+public class Solution {
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        List<List<Integer>> ans = new ArrayList<List<Integer>>();
+        if (nums == null || nums.length == 0) return ans;
+        Arrays.sort(nums);
+        helper(ans, new ArrayList<Integer>(), 0, nums);
+        return ans;
+    }
+
+    private void helper(List<List<Integer>> ans, List<Integer> list, int start, int[] nums) {
+        ans.add(new ArrayList<Integer>(list));
+        for (int i = start; i < nums.length; i++) {
+            if (i > start && nums[i] == nums[i - 1]) continue;
+            list.add(nums[i]);
+            helper(ans, list, i + 1, nums);
+            list.remove(list.size() - 1);
+        }
+    }
+}
+~~~
+
 ## 93. Restore IP Addresses (Medium) *
 Given a string containing only digits, restore it by returning all possible valid IP address combinations.
 
