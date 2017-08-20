@@ -456,6 +456,12 @@ follow up 1 是 可不可以不用 stack 。 我说可以用 两个变量 ： �
 来源: 一亩三分地
 ~~~
 
+~~~
+口袋宝石的面筋题，原题在lc上，Basic Calculator Basic Calculator II现在有这么几个follow up:
+1. + - * / ^
+2. + - * / ( )
+3. + - * / ^ ( )
+~~~
 
 ## 456. 132 Pattern
 Given a sequence of n integers a1, a2, ..., an, a 132 pattern is a subsequence ai, aj, ak such that i < j < k and ai < ak < aj. Design an algorithm that takes a list of n numbers as input and checks whether there is a 132 pattern in the list.

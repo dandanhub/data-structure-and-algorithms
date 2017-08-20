@@ -15,3 +15,6 @@ public int hashCode(){
                 lastName.hashCode();
   }
 ~~~
+
+
+The part of the contract here which is important is: objects which are .equals() MUST have the same .hashCode().

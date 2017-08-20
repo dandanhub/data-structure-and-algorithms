@@ -170,6 +170,43 @@ public class Solution {
 }
 ~~~
 
+Method 2: DP
+~~~
+class Solution {
+    public String longestPalindrome(String s) {
+        if (s == null || s.length() == 0) return "";
+
+        int len = s.length();
+        boolean[][] dp = new boolean[len][len];
+        for (int i = 0; i < len; i++) dp[i][i] = true;
+
+        int maxLen = 0;
+        int start = 0;
+        int end = 0;
+
+        for (int i = len - 1; i >= 0; i--) {
+            for (int j = i + 1; j < len; j++) {
+                if (s.charAt(i) == s.charAt(j)) {
+                    if (j == i + 1) dp[i][j] = true;
+                    else dp[i][j] = dp[i + 1][j - 1];
+                }
+                else {
+                    dp[i][j] = false;
+                }
+
+                if (dp[i][j] && j - i + 1 > maxLen) {
+                    maxLen = j - i + 1;
+                    start = i;
+                    end = j;
+                }
+            }
+        }
+
+        return s.substring(start, end + 1);
+    }
+}
+~~~
+
 ## 131. Palindrome Partitioning (Medium) *
 Given a string s, partition s such that every substring of the partition is a palindrome.
 

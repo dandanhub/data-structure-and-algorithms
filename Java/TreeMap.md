@@ -14,3 +14,24 @@ Removes and returns a key-value mapping associated with the least key in this ma
 ~~~
 Removes and returns a key-value mapping associated with the greatest key in this map, or null if the map is empty.
 ~~~
+
+## TreeSet
+1. 	lower(E e)
+~~~
+Returns the greatest element in this set strictly less than the given element, or null if there is no such element.
+~~~
+
+2. higher(E e)
+~~~
+Returns the least element in this set strictly greater than the given element, or null if there is no such element.
+~~~
+
+3. ceiling(E e)
+~~~
+Returns the least element in this set greater than or equal to the given element, or null if there is no such element.
+~~~
+
+4. floor(E e)
+~~~
+Returns the greatest element in this set less than or equal to the given element, or null if there is no such element.
+~~~

@@ -166,3 +166,104 @@ Runtime: O(n). Space complexity: O(log n)
 Binary Tree
 http://www.geeksforgeeks.org/check-if-leaf-traversal-of-two-binary-trees-is-same/
 ~~~
+
+## 530. Minimum Absolute Difference in BST
+Given a binary search tree with non-negative values, find the minimum absolute difference between values of any two nodes.
+
+Example:
+~~~
+Input:
+
+   1
+    \
+     3
+    /
+   2
+
+Output:
+1
+
+Explanation:
+The minimum absolute difference is 1, which is the difference between 2 and 1 (or between 2 and 3).
+~~~
+
+Note: There are at least two nodes in this BST.
+
+#### Solution
+Method 1: Inorder traversal
+~~~
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public int getMinimumDifference(TreeNode root) {
+        if (root == null) return 0;
+
+        Stack<TreeNode> stack = new Stack<TreeNode>();
+        TreeNode curr = root;
+        TreeNode prev = null;
+        int diff = Integer.MAX_VALUE;
+        while (curr != null || !stack.isEmpty()) {
+            while (curr != null) {
+                stack.push(curr);
+                curr = curr.left;
+            }
+
+            TreeNode node = stack.pop();
+            if (prev != null) {
+                diff = Math.min(diff, node.val - prev.val);
+            }
+            prev = node;
+
+            curr = node.right;
+        }
+        return diff;
+    }
+}
+~~~
+
+Follow-up: not BST
+~~~
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public int getMinimumDifference(TreeNode root) {
+        if (root == null) return 0;
+
+        Stack<TreeNode> stack = new Stack<TreeNode>();
+        stack.push(root);
+        TreeSet<Integer> treeset = new TreeSet<Integer>();
+        int diff = Integer.MAX_VALUE;
+        while (!stack.isEmpty()) {
+            TreeNode node = stack.pop();
+            treeset.add(node.val);
+
+            Integer higher = treeset.higher(node.val);
+            if (higher != null) {
+                diff = Math.min(diff, higher - node.val);
+            }
+            Integer lower = treeset.lower(node.val);
+            if (lower != null) {
+                diff = Math.min(diff, node.val - lower);
+            }
+
+            if (node.left != null) stack.push(node.left);
+            if (node.right != null) stack.push(node.right);
+        }
+        return diff;
+    }
+}
+~~~
