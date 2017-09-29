@@ -116,3 +116,164 @@ Follow up:
 Could you do it without any loop/recursion in O(1) runtime?
 
 #### Solution
+Follow up in O(1) time
+~~~
+class Solution {
+    public int addDigits(int num) {
+        return 1 + (num - 1) % 9;
+    }
+}
+~~~
+
+## 172. Factorial Trailing Zeroes (+++)
+Given an integer n, return the number of trailing zeroes in n!.
+
+Note: Your solution should be in logarithmic time complexity.
+
+#### Solution
+return n/5 + n/25 + n/125 + n/625 + n/3125+...;
+~~~
+class Solution {
+    public int trailingZeroes(int n) {
+        return n == 0 ? 0 : n / 5 + trailingZeroes(n / 5);
+    }
+}
+~~~
+
+Iterative
+~~~
+class Solution {
+    public int trailingZeroes(int n) {
+        int count = 0;
+        while (n > 0) {
+            count += n / 5;
+            n /= 5;
+        }
+        return count;
+    }
+}
+~~~
+
+## 202. Happy Number
+Write an algorithm to determine if a number is "happy".
+
+A happy number is a number defined by the following process: Starting with any positive integer, replace the number by the sum of the squares of its digits, and repeat the process until the number equals 1 (where it will stay), or it loops endlessly in a cycle which does not include 1. Those numbers for which this process ends in 1 are happy numbers.
+
+Example: 19 is a happy number
+
+12 + 92 = 82
+82 + 22 = 68
+62 + 82 = 100
+12 + 02 + 02 = 1
+
+#### Solution
+HashSet + Math
+~~~
+class Solution {
+    public boolean isHappy(int n) {
+        if (n <= 0) return false;
+        Set<Integer> set = new HashSet<Integer>();
+        set.add(n);
+        while (true) {
+            n = helper(n);
+            if (n == 1) return true;
+            if (set.contains(n)) return false;
+            set.add(n);
+        }
+    }
+
+    private int helper(int n) {
+        int num = 0;
+        while (n != 0) {
+            num += (n % 10) * (n % 10);
+            n /= 10;
+        }
+        return num;
+    }
+}
+~~~
+
+## 7. Reverse Integer
+Reverse digits of an integer.
+
+Example1: x = 123, return 321
+Example2: x = -123, return -321
+
+click to show spoilers.
+
+Have you thought about this?
+Here are some good questions to ask before coding. Bonus points for you if you have already thought through this!
+
+If the integer's last digit is 0, what should the output be? ie, cases such as 10, 100.
+
+Did you notice that the reversed integer might overflow? Assume the input is a 32-bit integer, then the reverse of 1000000003 overflows. How should you handle such cases?
+
+For the purpose of this problem, assume that your function returns 0 when the reversed integer overflows.
+
+#### Solution
+Method 1: Use a int array to store digits, actually no need
+~~~
+class Solution {
+    public int reverse(int x) {
+        if ((x >= 0 && x < 10) || (x < 0 && x > -10)) return x;
+
+        int sign = 1;
+        long num = x;
+        if (x < 0) {
+            sign = -1;
+            num = -x;
+        }
+
+        int N = 10;
+        int[] digits = new int[N];
+        int index = 0;
+        while (num > 0) {
+            digits[index++] = (int) num % 10;
+            num /= 10;
+        }
+
+        long res = 0;
+        for (int i = 0; i < index; i++) {
+            res = 10 * res + digits[i];
+        }
+        res = sign * res;
+
+        if ((res > 0 && res > (long) Integer.MAX_VALUE)
+            || (res < 0 && res < (long) Integer.MIN_VALUE))  {
+            return 0;
+        }
+
+        return (int) res;
+    }
+}
+~~~
+
+Method 2: Without using array
+~~~
+class Solution {
+    public int reverse(int x) {
+        if ((x >= 0 && x < 10) || (x < 0 && x > -10)) return x;
+
+        int sign = 1;
+        long num = x;
+        if (x < 0) {
+            sign = -1;
+            num = -x;
+        }
+
+        long res = 0;
+        while (num > 0) {
+            res = 10 * res + num % 10;
+            num /= 10;
+        }
+        res = sign * res;
+
+        if ((res > 0 && res > (long) Integer.MAX_VALUE)
+            || (res < 0 && res < (long) Integer.MIN_VALUE))  {
+            return 0;
+        }
+
+        return (int) res;
+    }
+}
+~~~

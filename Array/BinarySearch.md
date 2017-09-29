@@ -102,6 +102,46 @@ public class Solution {
 }
 ~~~
 
+Iterative
+~~~
+class Solution {
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int m = nums1.length;
+        int n = nums2.length;
+        int len = m + n;
+
+        if (len % 2 == 1) {
+            return helper(nums1, nums2, len / 2 + 1);          
+        }
+        else {
+            return (helper(nums1, nums2, len / 2) + helper(nums1, nums2, len / 2 + 1)) / 2.0;
+        }
+    }
+
+    private int helper(int[] nums1, int[] nums2, int k) {
+        int s1 = 0;
+        int s2 = 0;
+        while (k > 1) {
+            int mid1 = s1 + k / 2 - 1 >= nums1.length ? Integer.MAX_VALUE : nums1[s1 + k / 2 - 1];
+            int mid2 = s2 + k / 2 - 1 >= nums2.length ? Integer.MAX_VALUE : nums2[s2 + k / 2 - 1];
+
+            if (mid1 >= mid2) {
+                s2 += k / 2;
+                k -= k / 2;
+            }
+            else {
+                s1 += k / 2;
+                k -= k / 2;
+            }
+        }
+
+        if (s1 >= nums1.length) return nums2[s2];
+        if (s2 >= nums2.length) return nums1[s1];
+        return nums1[s1] <= nums2[s2] ? nums1[s1] : nums2[s2];
+    }
+}
+~~~
+
 ## 153. Find Minimum in Rotated Sorted Array (Medium)
 Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand.
 

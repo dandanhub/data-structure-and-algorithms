@@ -151,3 +151,155 @@ class Solution {
     }
 }
 ~~~
+
+## 256. Paint House
+There are a row of n houses, each house can be painted with one of the three colors: red, blue or green. The cost of painting each house with a certain color is different. You have to paint all the houses such that no two adjacent houses have the same color.
+
+The cost of painting each house with a certain color is represented by a n x 3 cost matrix. For example, costs[0][0] is the cost of painting house 0 with color red; costs[1][2] is the cost of painting house 1 with color green, and so on... Find the minimum cost to paint all houses.
+
+Note:
+All costs are positive integers.
+
+#### Solution
+Method 1: m - number of house, n - number of color <br>
+Time O(mn^2), Space O(mn)
+~~~
+class Solution {
+    public int minCost(int[][] costs) {
+        if (costs == null || costs.length == 0 || costs[0].length == 0) return 0;
+
+        int h = costs.length;
+        int c = costs[0].length;
+        int[][] dp = new int[h][c];
+        for (int j = 0; j < c; j++) dp[0][j] = costs[0][j];
+
+        for (int i = 1; i < h; i++) {
+            for (int j = 0; j < c; j++) {
+                dp[i][j] = Integer.MAX_VALUE;
+                for (int k = 0; k < c; k++) {
+                    if (j == k) continue;
+                    dp[i][j] = Math.min(dp[i][j], dp[i - 1][k] + costs[i][j]);
+                }
+            }
+        }
+
+        int min = Integer.MAX_VALUE;
+        for (int j = 0; j  < c; j++) min = Math.min(min, dp[h - 1][j]);
+        return min;
+    }
+}
+~~~
+
+Method 2: limited to the question <br>
+Time O(m), Space O(1)
+~~~
+class Solution {
+    public int minCost(int[][] costs) {
+        if (costs == null || costs.length == 0 || costs[0].length == 0) return 0;
+
+        int lastR = costs[0][0];
+        int lastG = costs[0][1];
+        int lastB = costs[0][2];
+
+        for (int i = 1; i < costs.length; i++) {
+            int currR = Math.min(lastG, lastB) + costs[i][0];
+            int currG = Math.min(lastR, lastB) + costs[i][1];
+            int currB = Math.min(lastR, lastG) + costs[i][2];
+
+            lastR = currR;
+            lastG = currG;
+            lastB = currB;
+        }
+
+        return Math.min(lastR, Math.min(lastG, lastB));
+    }
+}
+~~~
+
+## 265. Paint House II
+There are a row of n houses, each house can be painted with one of the k colors. The cost of painting each house with a certain color is different. You have to paint all the houses such that no two adjacent houses have the same color.
+
+The cost of painting each house with a certain color is represented by a n x k cost matrix. For example, costs[0][0] is the cost of painting house 0 with color 0; costs[1][2] is the cost of painting house 1 with color 2, and so on... Find the minimum cost to paint all houses.
+
+Note:
+All costs are positive integers.
+
+Follow up:
+Could you solve it in O(nk) runtime?
+
+#### Solution
+Time: O(nk) time, Space: O(1)
+~~~
+class Solution {
+    public int minCostII(int[][] costs) {
+        if (costs == null || costs.length == 0 || costs[0].length == 0) return 0;
+
+        int n = costs.length;
+        int k = costs[0].length;
+
+        int lastMin = 0;
+        int lastSec = 0;
+        int lastIndex = -1;
+
+        for (int i = 0; i < n; i++) {
+            int curIndex = -1;
+            int curMin = Integer.MAX_VALUE;
+            int curSec = Integer.MAX_VALUE;
+            for (int j = 0; j < k; j++) {
+                int cost = (j == lastIndex ? lastSec : lastMin) + costs[i][j];
+                if (cost < curMin) {
+                    curSec = curMin;
+                    curMin = cost;
+                    curIndex = j;
+                }
+                else if (cost < curSec) {
+                    curSec = cost;
+                }
+            }
+            lastIndex = curIndex;
+            lastMin = curMin;
+            lastSec = curSec;
+        }
+
+        return lastMin;
+    }
+}
+~~~
+
+## 276. Paint Fence
+There is a fence with n posts, each post can be painted with one of the k colors.
+
+You have to paint all the posts such that no more than two adjacent fence posts have the same color.
+
+Return the total number of ways you can paint the fence.
+
+Note:
+n and k are non-negative integers.
+
+#### Solution
+~~~
+There is a fence with n posts, each post can be painted with one of the k colors.
+
+You have to paint all the posts such that no more than two adjacent fence posts have the same color.
+
+Return the total number of ways you can paint the fence.
+
+Note:
+n and k are non-negative integers.
+~~~
+class Solution {
+    public int numWays(int n, int k) {
+        if (n == 0) return 0;
+        if (n == 1) return k;
+
+        int sameColor = k;
+        int diffColor = k * (k - 1);
+        for (int i = 2; i < n; i++) {
+            int temp = diffColor;
+            diffColor = (sameColor + diffColor) * (k - 1);
+            sameColor = temp;
+        }
+        return sameColor + diffColor;
+    }
+}
+~~~

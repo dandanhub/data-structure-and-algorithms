@@ -76,3 +76,76 @@ public class ValidWordAbbr {
  * boolean param_1 = obj.isUnique(word);
  */
 ~~~
+
+## 320. Generalized Abbreviation
+Write a function to generate the generalized abbreviations of a word.
+
+Example: <br>
+Given word = "word", return the following list (order does not matter):
+~~~
+["word", "1ord", "w1rd", "wo1d", "wor1", "2rd", "w2d", "wo2", "1o1d", "1or1", "w1r1", "1o2", "2r1", "3d", "w3", "4"]
+~~~
+
+#### Solution
+Backtrack, think like subset problem
+~~~
+class Solution {
+    public List<String> generateAbbreviations(String word) {
+        List<String> ans = new ArrayList<String>();
+        helper(ans, word, 0, new StringBuilder(), 0);
+        return ans;
+    }
+
+    private void helper(List<String> ans, String word, int pos, StringBuilder sb, int count) {
+        int len = sb.length();
+        if (pos == word.length()) {
+            if (count > 0) sb.append(count);
+            ans.add(sb.toString());
+        }
+        else {
+            helper(ans, word, pos + 1, sb, count + 1);
+
+            if (count > 0) sb.append(count);
+            sb.append(word.charAt(pos));
+            helper(ans, word, pos + 1, sb, 0);
+        }
+        sb.setLength(len);
+    }
+}
+~~~
+
+Bit manipulation
+~~~
+class Solution {
+    public List<String> generateAbbreviations(String word) {
+        List<String> ans = new ArrayList<String>();
+        int count = 1 << word.length();
+        for (int i = 0; i < count; i++) {
+           ans.add(generateAbbr(word, i));
+        }
+        return ans;
+    }
+
+    private String generateAbbr(String word, int count) {
+        int k = 0;
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < word.length(); i++, count >>= 1) {
+            if ((1 & count) == 1) {
+                k++;
+            }
+            else {
+                if (k > 0) {
+                    sb.append(k);
+                }
+                sb.append(word.charAt(i));
+                k = 0;
+            }
+        }
+
+        if (k > 0) {
+            sb.append(k);
+        }
+        return sb.toString();
+    }
+}
+~~~

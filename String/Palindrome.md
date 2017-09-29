@@ -710,3 +710,78 @@ public class Solution {
     }
 }
 ~~~
+
+## 647. Palindromic Substrings
+Given a string, your task is to count how many palindromic substrings in this string.
+
+The substrings with different start indexes or end indexes are counted as different substrings even they consist of same characters.
+
+Example 1:
+~~~
+Input: "abc"
+Output: 3
+Explanation: Three palindromic strings: "a", "b", "c".
+~~~
+
+Example 2:
+~~~
+Input: "aaa"
+Output: 6
+Explanation: Six palindromic strings: "a", "a", "a", "aa", "aa", "aaa".
+~~~
+
+#### Solution
+Method 1: DP O(n^2) two pass, 19ms
+~~~
+class Solution {
+    public int countSubstrings(String s) {
+        if (s == null || s.length() == 0) return 0;
+
+        int len = s.length();
+        boolean[][] dp = new boolean[len][len];
+        for (int i = len - 1; i >= 0; i--) {
+            dp[i][i] = true;
+            for (int j = i + 1; j < len; j++) {
+                if (s.charAt(i) == s.charAt(j)
+                    && (j == i + 1 || dp[i + 1][j - 1])) {
+                    dp[i][j] = true;
+                }
+            }
+        }
+
+        int count = 0;
+        for (int i = 0; i < len; i++) {
+            for (int j = i; j < len; j++) {
+                if (dp[i][j]) count += 1;
+            }
+        }
+        return count;
+    }
+}
+~~~
+
+Method 2: 13ms
+~~~
+class Solution {
+    int count = 0;
+
+    public int countSubstrings(String s) {
+        if (s == null || s.length() == 0) return 0;
+
+        int len = s.length();
+        for (int i = 0; i < len; i++) {
+            extend(s, i, i);
+            extend(s, i, i + 1);
+        }
+        return count;
+    }
+
+    private void extend(String s, int left, int right) {
+        while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+            count++;
+            left--;
+            right++;
+        }
+    }
+}
+~~~

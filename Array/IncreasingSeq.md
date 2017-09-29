@@ -339,3 +339,36 @@ The longest increasing path is [3, 4, 5, 6]. Moving diagonally is not allowed.
 慢版本：从每个点开始，向合法的上下左右走，dist[i][j]记录从出发点到matrix[j][j]的距离。初始化是dist[i][j]为1，一旦找到出现距离大于dist[i][j]的情况，那么更新dist[i][j]。由于这样造成了很多重复，performance不是很好。
 
 改良版：从每个点出发，记录从这个点作为起始点，能reach的最大距离，如果在DFS的过程中到达了访问过的点就不再重复访问，这样避免了重复。
+
+~~~
+class Solution {
+    public int longestIncreasingPath(int[][] matrix) {
+        if (matrix == null || matrix.length == 0
+            || matrix[0].length == 0) return 0;
+
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int[][] memo = new int[m][n];
+        int ans = 1;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                ans = Math.max(ans, dfs(matrix, memo, i, j));
+            }
+        }
+        return ans;
+    }
+
+    private int dfs(int[][] matrix, int[][] memo, int x, int y) {
+        if (memo[x][y] != 0) return memo[x][y];
+        int[][] dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        for (int[] dir : dirs) {
+            if (x + dir[0] >= 0 && x + dir[0] < matrix.length
+                && y + dir[1] >= 0 && y + dir[1] < matrix[0].length
+                && matrix[x + dir[0]][y + dir[1]] > matrix[x][y])
+            memo[x][y] = Math.max(memo[x][y], 1 + dfs(matrix, memo, x + dir[0], y + dir[1]));
+        }
+        memo[x][y] = Math.max(1, memo[x][y]);
+        return memo[x][y];
+    }
+}
+~~~

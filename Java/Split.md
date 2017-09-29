@@ -34,3 +34,8 @@ b
 c
 d
 e
+
+split() accepts a regular expression, so you need to escape . to not consider it as a regex meta character. Here's an exemple :
+
+String[] fn = filename.split("\\.");
+return fn[0];

@@ -347,3 +347,75 @@ public class Solution {
     }
 }
 ~~~
+
+## 399. Evaluate Division
+Equations are given in the format A / B = k, where A and B are variables represented as strings, and k is a real number (floating point number). Given some queries, return the answers. If the answer does not exist, return -1.0.
+
+Example:
+Given a / b = 2.0, b / c = 3.0.
+queries are: a / c = ?, b / a = ?, a / e = ?, a / a = ?, x / x = ? .
+return [6.0, 0.5, -1.0, 1.0, -1.0 ].
+
+The input is: vector<pair<string, string>> equations, vector<double>& values, vector<pair<string, string>> queries , where equations.size() == values.size(), and the values are positive. This represents the equations. Return vector<double>.
+
+According to the example above:
+~~~
+equations = [ ["a", "b"], ["b", "c"] ],
+values = [2.0, 3.0],
+queries = [ ["a", "c"], ["b", "a"], ["a", "e"], ["a", "a"], ["x", "x"] ].
+The input is always valid. You may assume that evaluating the queries will result in no division by zero and there is no contradiction.
+~~~
+
+#### Solution
+build graph and then dfs
+~~~
+class Solution {
+    public double[] calcEquation(String[][] equations, double[] values, String[][] queries) {
+        Map<String, Map<String, Double>> graph = new HashMap<String, Map<String, Double>>();
+        for (int i = 0; i < equations.length; i++) {
+            Map<String, Double> fMap = graph.getOrDefault(equations[i][0], new HashMap<String, Double>());
+            fMap.put(equations[i][1], values[i]);
+            graph.put(equations[i][0], fMap);
+
+            if (values[i] != 0) {
+                Map<String, Double> bMap = graph.getOrDefault(equations[i][1], new HashMap<String, Double>());
+                bMap.put(equations[i][0], 1 / values[i]);
+                graph.put(equations[i][1], bMap);
+            }
+        }
+
+        int len = queries.length;
+        double[] ans = new double[len];
+        // Set<String> visited = new HashSet<String>();
+        for (int i = 0; i < len; i++) {
+            ans[i] = dfs(graph, queries[i][0], queries[i][1], 1, new HashSet<String>());
+        }
+        return ans;
+    }
+
+    private double dfs(Map<String, Map<String, Double>> graph, String start,
+                       String end, double val, Set<String> visited) {
+
+        if (!graph.containsKey(start) || !graph.containsKey(end)) {
+            return -1;
+        }
+
+        if (start.equals(end)) {
+            return val;
+        }
+
+        visited.add(start);
+        Map<String, Double> map = graph.get(start);
+        for (Map.Entry<String, Double> entry : map.entrySet()) {
+            if (visited.contains(entry.getKey())) continue;
+            double ans = dfs(graph, entry.getKey(), end, val * entry.getValue(), visited);
+            if (ans != -1) {
+                return ans;
+            }    
+        }
+        visited.remove(start);
+
+        return -1;
+    }
+}
+~~~

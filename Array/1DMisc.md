@@ -125,3 +125,55 @@ public class Solution {
     }
 }
 ~~~
+
+## 228. Summary Ranges
+Given a sorted integer array without duplicates, return the summary of its ranges.
+
+Example 1:
+~~~
+Input: [0,1,2,4,5,7]
+Output: ["0->2","4->5","7"]
+~~~
+
+Example 2:
+~~~
+Input: [0,2,3,4,6,8,9]
+Output: ["0","2->4","6","8->9"]
+~~~
+
+#### Solution
+Method 1: 比较直接的写法
+~~~
+class Solution {
+    public List<String> summaryRanges(int[] nums) {
+        List<String> list = new ArrayList<String>();
+        if (nums == null || nums.length == 0) return list;
+
+        int start = nums[0];
+        int i = 1;
+        while (i < nums.length) {
+            if (nums[i] == nums[i - 1] + 1) {
+                i++;
+                continue;
+            }
+            list.add(generateString(start, nums[i - 1]));
+            start = nums[i];
+            i++;
+        }
+        list.add(generateString(start, nums[nums.length - 1]));
+        return list;
+    }
+
+    private String generateString(int start, int end) {
+        if (start == end) {
+            return String.valueOf(start);
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.valueOf(start));
+        sb.append("->");
+        sb.append(String.valueOf(end));
+        return sb.toString();
+    }
+}
+~~~

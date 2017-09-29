@@ -189,6 +189,43 @@ public class Solution {
 }
 ~~~
 
+## 414. Third Maximum Number
+Given a non-empty array of integers, return the third maximum number in this array. If it does not exist, return the maximum number. The time complexity must be in O(n).
+
+#### Solution
+
+~~~
+class Solution {
+    public int thirdMax(int[] nums) {
+        if (nums == null || nums.length == 0) return -1;
+
+        Integer first = null;
+        Integer second = null;
+        Integer third = null;
+        for (int num : nums) {
+            if ((first != null && num == first) || (second != null && num == second)
+                || (third != null && num == third)) {
+                continue;
+            }
+            else if (first == null || num > first) {
+                third = second;
+                second = first;
+                first = num;
+            }
+            else if (second == null || num > second) {
+                third = second;
+                second = num;
+            }
+            else if (third == null || num > third) {
+                third = num;
+            }
+        }
+
+        return third == null ? first : third;
+    }
+}
+~~~
+
 ## 215. Kth Largest Element in an Array
 Find the kth largest element in an unsorted array. Note that it is the kth largest element in the sorted order, not the kth distinct element.
 

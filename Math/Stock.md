@@ -45,3 +45,108 @@ public class Solution {
     }
 }
 ~~~
+
+## 122. Best Time to Buy and Sell Stock II
+Say you have an array for which the ith element is the price of a given stock on day i.
+
+Design an algorithm to find the maximum profit. You may complete as many transactions as you like (ie, buy one and sell one share of the stock multiple times). However, you may not engage in multiple transactions at the same time (ie, you must sell the stock before you buy again).
+
+#### Solution
+~~~
+class Solution {
+    public int maxProfit(int[] prices) {
+        if (prices == null || prices.length == 0) return 0;
+
+        int profit = 0;
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > prices[i - 1]) {
+                profit += prices[i] - prices[i - 1];
+            }
+        }
+
+        return profit;
+    }
+}
+~~~
+
+## 123. Best Time to Buy and Sell Stock III
+Say you have an array for which the ith element is the price of a given stock on day i.
+
+Design an algorithm to find the maximum profit. You may complete at most two transactions.
+
+Note:
+You may not engage in multiple transactions at the same time (ie, you must sell the stock before you buy again).
+
+#### Solution
+time O(n); O(n) space
+~~~
+class Solution {
+    public int maxProfit(int[] prices) {
+        if (prices == null || prices.length == 0) return 0;
+
+        int len = prices.length;
+        int[] starts = new int[len];
+        int[] ends = new int[len];
+
+        int min = Integer.MAX_VALUE;
+        int profit = 0;
+        for (int i = 0; i < len; i++) {
+            if (prices[i] >= min) {
+                profit = Math.max(profit, prices[i] - min);
+            } else {
+                min = prices[i];
+            }
+            starts[i] = profit;
+        }
+
+        int max = Integer.MIN_VALUE;
+        profit = 0;
+        for (int i = len - 1; i >= 0; i--) {
+            if (prices[i] <= max) {
+                profit = Math.max(profit, max - prices[i]);
+            } else {
+                max = prices[i];
+            }
+            ends[i] = profit;
+        }
+
+        int ans = 0;
+        for (int i = 0; i < len; i++) {
+            ans = Math.max(ans, starts[i] + ends[i]);
+        }
+
+        return ans;
+    }
+}
+~~~
+
+time O(n); space O(1)
+~~~
+class Solution {
+    public int maxProfit(int[] prices) {
+        if (prices == null || prices.length == 0) return 0;
+
+        int buy1 = Integer.MIN_VALUE, buy2 = Integer.MIN_VALUE;
+        int sell1 = 0, sell2 = 0;
+
+        for (int price : prices) {
+            sell2 = Math.max(sell2, buy2 + price);
+            buy2 = Math.max(buy2, sell1 - price);
+            sell1 = Math.max(sell1, buy1 + price);
+            buy1 = Math.max(buy1, -price);
+        }
+        return sell2;
+    }
+}
+~~~
+
+## 188. Best Time to Buy and Sell Stock IV
+Say you have an array for which the ith element is the price of a given stock on day i.
+
+Design an algorithm to find the maximum profit. You may complete at most k transactions.
+
+Note:
+You may not engage in multiple transactions at the same time (ie, you must sell the stock before you buy again).
+
+#### Solution
+DP[k][i] = max(dp[k][i-1], max(dp[k-1][j] - prices[j] + prices[i])
